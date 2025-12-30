@@ -1,80 +1,95 @@
-:root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --bg-light: #f3f4f6;
-    --card-bg: #ffffff;
-    --text-dark: #1f2937;
-}
-
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    background: var(--bg-light);
-    color: var(--text-dark);
+    background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+    color: #4a148c;
     transition: 0.3s;
 }
 
 body.dark {
-    --bg-light: #111827;
-    --card-bg: #1f2937;
-    --text-dark: #f3f4f6;
+    background: #212121;
+    color: #e1bee7;
 }
 
-/* Bubbles Fix */
-.bubbles {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -1;
+header {
+    background: #6a1b9a;
+    color: white;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.hero {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.quote-box, .countdown-box, .quiz-box, .timer-box, .todo-box, .progress-box, .reflection-box {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+body.dark div[class$="-box"] {
+    background: #424242;
+}
+
+button {
+    background: #9c27b0;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover { background: #7b1fa2; }
+
+#timer { font-size: 3rem; text-align: center; font-weight: bold; }
+
+.progress-bar {
+    width: 100%;
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
     overflow: hidden;
 }
 
+#progressFill {
+    height: 100%;
+    background: #ab47bc;
+    width: 0%;
+    transition: 0.5s;
+}
+
+/* Bubbles */
 .bubble {
-    position: absolute;
+    position: fixed;
     bottom: -100px;
-    background: rgba(99, 102, 241, 0.15);
+    background: rgba(171, 71, 188, 0.2);
     border-radius: 50%;
+    z-index: -1;
     animation: floatUp linear infinite;
 }
 
 @keyframes floatUp {
-    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
-}
-
-/* Cards Layout */
-.container {
-    max-width: 800px;
-    margin: 20px auto;
-    display: grid;
-    gap: 20px;
-    padding: 0 15px;
-}
-
-.card {
-    background: var(--card-bg);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-button {
-    background: var(--primary);
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: 0.2s;
-}
-
-button:hover { background: var(--primary-dark); }
-
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
+    to { transform: translateY(-120vh); opacity: 0; }
 }
