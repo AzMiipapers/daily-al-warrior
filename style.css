@@ -42,6 +42,11 @@ header {
 
 }
 
+header {
+    /* ... பழைய கோட்கள் ... */
+    will-change: padding, background;
+    backface-visibility: hidden;
+}
 
 
 /* Logo Wrapper styling */
