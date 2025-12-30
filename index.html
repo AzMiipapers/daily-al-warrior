@@ -3,141 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily A/L Warrior - Official</title>
+    <title>Daily A/L Warrior Pro | Student Portal</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="light-theme">
     <div class="bubbles" id="bubbles"></div>
 
     <header id="mainHeader">
         <div class="header-container">
             <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                <span class="material-icons">auto_stories</span>
-                <h2 id="siteTitle">Daily A/L Warrior</h2>
+                <span class="material-icons">shield</span>
+                <h2 id="siteTitle">A/L Warrior</h2>
             </div>
             <nav class="nav-links">
-                <button id="themeToggle" class="icon-btn">🌙</button>
-                <button id="settingsBtn" class="icon-btn">⚙️</button>
-                <button id="loginBtn" class="primary-btn">Login</button>
+                <button onclick="toggleTheme()" class="icon-btn" title="Toggle Theme">🌓</button>
+                <button id="settingsBtn" class="icon-btn" title="Settings">⚙️</button>
+                <button class="primary-btn">Sign In</button>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        <section class="hero card">
-            <h1 id="heroTitle">Your Daily Companion for A/L Success</h1>
-            <p id="heroDesc">Official Study Hub for Bio & Maths Students.</p>
-        </section>
-
-        <section class="card motivation-box">
-            <h2 id="motivationHeading">Today's Motivation</h2>
-            <p id="quote">"The secret of getting ahead is getting started."</p>
-            <button onclick="newQuote()">New Quote</button>
-        </section>
-
-        <section class="card countdown-box">
-            <h2>⏰ Exam Countdown</h2>
-            <div class="input-row">
-                <input type="date" id="examDateInput">
-                <button onclick="setExamDate()">Set Date</button>
+        <section class="hero-card">
+            <div class="hero-content">
+                <h1 id="welcomeText">Welcome, Warrior</h1>
+                <div class="badges">
+                    <span id="streamLabel" class="badge">Biology Stream</span>
+                    <span id="rankLabel" class="badge">Rank: Scholar</span>
+                </div>
             </div>
-            <div id="countdown" class="timer-text">Set your exam date!</div>
         </section>
 
-        <div class="dashboard-grid">
-            <section class="card timer-box">
-                <h2>Focus Timer</h2>
-                <div id="timer">25:00</div>
-                <div class="controls">
-                    <button onclick="startTimer()">Start</button>
-                    <button onclick="resetTimer()">Reset</button>
+        <div class="main-grid">
+            <div class="col">
+                <div class="card">
+                    <h2 id="gradeHeading">📊 Grade Predictor</h2>
+                    <div class="input-group">
+                        <input type="number" id="marksInput" placeholder="Enter Marks (0-100)">
+                        <button onclick="predictGrade()">Check</button>
+                    </div>
+                    <div id="gradeResult" class="grade-display">-</div>
                 </div>
-            </section>
 
-            <section class="card todo-box">
-                <h2>Today's Tasks</h2>
-                <div class="input-row">
-                    <input type="text" id="taskInput" placeholder="Add task...">
-                    <button onclick="addTask()">Add</button>
+                <div class="card">
+                    <h2 id="musicHeading">🌿 Study Ambience</h2>
+                    <div class="music-grid">
+                        <button onclick="playSound('rain')">🌧️ Rain</button>
+                        <button onclick="playSound('forest')">🌲 Forest</button>
+                        <button onclick="playSound('lofi')">🎵 Lofi</button>
+                        <button class="stop-btn" onclick="stopSound()">Stop</button>
+                    </div>
                 </div>
-                <ul id="taskList"></ul>
-            </section>
+            </div>
+
+            <div class="col">
+                <div class="card">
+                    <h2 id="timerHeading">Focus Timer</h2>
+                    <div id="timer" class="big-timer">25:00</div>
+                    <div class="timer-btns">
+                        <button onclick="startTimer()">Start Session</button>
+                        <button onclick="resetTimer()" class="secondary">Reset</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 id="cdHeading">Exam Countdown</h2>
+                    <input type="date" id="examDateInput" onchange="setExamDate()">
+                    <div id="countdown" class="countdown-text">Set Date First</div>
+                </div>
+            </div>
         </div>
 
         <section class="card flashcard-box">
-            <h2><span class="material-icons">psychology</span> Bio & Maths Flashcards</h2>
-            <div id="flashcard" class="flashcard" onclick="flipCard()">
-                <div id="cardContent">Click 'Next' to start revision!</div>
+            <h2><span class="material-icons">psychology</span> Quick Revision (<span id="activeStream">BIO</span>)</h2>
+            <div class="flashcard" onclick="flipCard()">
+                <div id="cardContent">Pick your stream in settings!</div>
             </div>
-            <button onclick="nextCard()" style="margin-top:15px; width: 100%;">Next Card</button>
+            <button onclick="nextCard()" class="full-btn">Next Flashcard</button>
         </section>
 
-        <section class="card progress-box">
-            <h2>Syllabus Progress</h2>
-            <div class="input-row">
-                <input type="text" id="subjectInput" placeholder="Subject/Lesson Name">
-                <button onclick="addSubject()">Add</button>
+        <section class="card progress-section">
+            <h2 id="progHeading">Unit Master Tracker</h2>
+            <div class="input-group">
+                <input type="text" id="unitInput" placeholder="Enter Unit Name...">
+                <button onclick="addUnit()">Add Unit</button>
             </div>
-            <div id="subjectsList"></div>
-            <div class="overall">
-                <p>Overall Progress: <span id="overallPercent">0%</span></p>
-                <div class="progress-bar"><div id="progressFill"></div></div>
+            <div id="unitList"></div>
+            <div class="progress-footer">
+                <div class="progress-bar"><div id="masterProgress" class="progress-fill"></div></div>
+                <p>Overall: <span id="progressPercent">0%</span></p>
             </div>
         </section>
 
-        <div class="dashboard-grid">
-            <section class="card water-box">
-                <h2>💧 Water Tracker</h2>
-                <p>Drank: <span id="waterCount">0</span> / 8 Glasses</p>
-                <button onclick="addWater()" style="width:100%">Drink 1 Glass</button>
-            </section>
-
-            <section class="card music-box">
-                <h2>🎵 Study Music</h2>
-                <div class="music-controls">
-                    <button onclick="playMusic('lofi')">Lofi</button>
-                    <button onclick="playMusic('rain')">Rain</button>
-                    <button onclick="stopMusic()">Stop</button>
-                </div>
-                <audio id="studyAudio" loop></audio>
-            </section>
-        </div>
-
-        <section class="card reflection-box">
-            <h2 id="reflectionHeading">✨ What Did I Learn Today?</h2>
-            <textarea id="reflectionInput" placeholder="Today I learned..."></textarea>
-            <button onclick="saveReflection()" style="width:100%">Save Reflection</button>
-            <p id="todayReflection" style="margin-top:10px; font-style: italic;"></p>
+        <section class="card">
+            <h2 id="noteHeading">📝 Quick Study Notes</h2>
+            <textarea id="notePad" placeholder="Jot down formulas or key points..." oninput="saveNote()"></textarea>
         </section>
     </main>
 
     <div id="settingsModal" class="modal">
-        <div class="modal-content card">
-            <h3>⚙️ Settings</h3>
-            <div class="setting-item">
-                <label>Your Name:</label>
-                <input type="text" id="userNameInput" placeholder="Enter name...">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>System Settings</h3>
+                <span class="close-modal" id="closeSettings">&times;</span>
             </div>
-            <div class="setting-item">
-                <label>Language:</label>
-                <select id="langSelect">
-                    <option value="en">English</option>
-                    <option value="ta">Tamil (தமிழ்)</option>
-                </select>
-            </div>
-            <div class="setting-btn-group">
-                <button onclick="saveSettings()">Save & Close</button>
-                <button onclick="resetAllData()" style="background: #e74c3c;">Reset All</button>
+            <div class="modal-body">
+                <div class="s-row">
+                    <label>Student Name</label>
+                    <input type="text" id="nameInp" placeholder="Enter your name">
+                </div>
+                <div class="s-row">
+                    <label>Preferred Stream</label>
+                    <select id="streamInp">
+                        <option value="bio">Biology</option>
+                        <option value="maths">Combined Maths</option>
+                    </select>
+                </div>
+                <div class="s-row">
+                    <label>Language</label>
+                    <select id="langInp">
+                        <option value="en">English</option>
+                        <option value="ta">Tamil (தமிழ்)</option>
+                    </select>
+                </div>
+                <button onclick="applySettings()" class="full-btn">Save & Apply</button>
+                <button onclick="resetAllData()" class="reset-btn">Reset All Data</button>
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Daily A/L Warrior | Built for Success</p>
-    </footer>
-
+    <audio id="bgAudio" loop></audio>
     <script src="script.js"></script>
 </body>
 </html>
