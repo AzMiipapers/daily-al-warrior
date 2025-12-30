@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Bubbles Background -->
+    <div class="bubbles" id="bubbles"></div>
+
     <!-- Header -->
     <header>
         <div class="header-container">
@@ -34,7 +37,7 @@
     <!-- Dashboard -->
     <section id="dashboard" class="container">
 
-        <!-- Motivation Quote -->
+        <!-- Daily Motivation Quote -->
         <div class="quote-box">
             <h2>இன்றைய உத்வேகம்</h2>
             <p id="quote">"வெற்றி என்பது தோல்வியில் இருந்து எழுந்து நிற்பதுதான்!"</p>
@@ -92,6 +95,13 @@
             <textarea id="reflectionInput" placeholder="இன்னைக்கு நான்..."></textarea>
             <button onclick="saveReflection()">Save</button>
             <p id="todayReflection"></p>
+        </div>
+
+        <!-- More Motivational Quotes -->
+        <div class="quote-box">
+            <h2>மேலும் உத்வேகமூட்டும் வார்த்தைகள்</h2>
+            <div id="extraQuotes"></div>
+            <button onclick="loadMoreQuotes()">மேலும் Quotes ஏற்று</button>
         </div>
 
         <!-- About Section -->
