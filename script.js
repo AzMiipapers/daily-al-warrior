@@ -221,7 +221,7 @@ function factoryReset() { if(confirm("Delete all data?")) { localStorage.clear()
 
 // --- script.js ---
 
-// உங்கள் API Key இங்கே உள்ளது
+// உங்கள் API Key
 const GEMINI_API_KEY = "AIzaSyAmZWQyjfsgQIaItNlOPNAz6N42GaZxuZo"; 
 
 function toggleChat() {
@@ -248,8 +248,8 @@ async function askAI() {
     chatContent.appendChild(loadingDiv);
 
     try {
-        // இங்குதான் மாற்றம் செய்யப்பட்டுள்ளது: 'v1beta' க்கு பதில் 'v1' பயன்படுத்தப்பட்டுள்ளது
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+        // இப்போது மிகவும் நிலையான (Stable) 'gemini-1.5-flash' மாடலை 'v1' API மூலம் அழைக்கிறோம்
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -262,9 +262,11 @@ async function askAI() {
         if (data.candidates && data.candidates[0].content.parts[0].text) {
             loadingDiv.innerText = data.candidates[0].content.parts[0].text;
         } else if (data.error) {
+            // பிழை வந்தால் அது என்னவென்று இங்கே தெளிவாகத் தெரியும்
             loadingDiv.innerText = "Error: " + data.error.message;
+            console.error("Full Error Data:", data);
         } else {
-            loadingDiv.innerText = "மன்னிக்கவும், பதில் தர முடியவில்லை.";
+            loadingDiv.innerText = "பதில் கிடைக்கவில்லை, மீண்டும் முயலவும்.";
         }
     } catch (error) {
         loadingDiv.innerText = "இணைய இணைப்பைச் சரிபார்க்கவும்.";
