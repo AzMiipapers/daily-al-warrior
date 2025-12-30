@@ -1,4 +1,4 @@
-// Motivational Quotes
+// Daily Quotes
 const quotes = [
     "வெற்றி என்பது தோல்வியில் இருந்து எழுந்து நிற்பதுதான்!",
     "கனவு காண்பவன் மட்டுமே அதை நிஜமாக்க முடியும்.",
@@ -11,6 +11,44 @@ function newQuote() {
     const random = Math.floor(Math.random() * quotes.length);
     document.getElementById("quote").innerText = quotes[random];
 }
+
+// More Quotes (50+)
+const moreQuotes = [
+    "உழைப்பு உன்னை உயர்த்தும், கனவு உன்னை இழுத்துச் செல்லும்!",
+    "தோல்வி என்பது இறுதி அல்ல – அது அடுத்த வெற்றிக்கான பயிற்சி.",
+    "ஒவ்வொரு நாளும் ஒரு புதிய தொடக்கம்!",
+    "Believe you can and you're halfway there.",
+    "கற்றது கைமண் அளவு, கல்லாதது உலகளவு.",
+    "The only way to do great work is to love what you do.",
+    "நீ இன்று செய்யும் உழைப்பு நாளை உன்னை பெருமைப்படுத்தும்.",
+    "Success is not final, failure is not fatal.",
+    "எத்தனை தடவை தோற்றாலும் எழுந்து நிற்பவன் தான் வெற்றியாளன்.",
+    "Dream big. Work hard. Stay focused.",
+    "உன் கனவுகளை நோக்கி ஒவ்வொரு அடியும் எடுத்து வை!",
+    "The future belongs to those who believe in their dreams.",
+    "இன்று கடினமாக உழை, நாளை சிரித்து வாழ!",
+    "You are never too old to set another goal.",
+    "வெற்றி பெற விரும்பினால் தோல்வியை தழுவு.",
+    "உன் மனதில் நம்பிக்கை இருந்தால் உலகம் உன்னை வணங்கும்.",
+    "ஒரு பயணம் ஆயிரம் மைல் தொடங்குவது ஒரு அடியில் தான்.",
+    "Hard work beats talent when talent doesn't work hard.",
+    "எதிர்காலம் உழைப்பவர்களுக்கு சொந்தம்.",
+    "Stay positive, work hard, make it happen."
+];
+function loadMoreQuotes() {
+    const container = document.getElementById("extraQuotes");
+    container.innerHTML = "";
+    const shuffle = [...moreQuotes].sort(() => 0.5 - Math.random()).slice(0, 10);
+    shuffle.forEach(q => {
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>💜</strong> ${q}`;
+        p.style.margin = "15px 0";
+        p.style.fontStyle = "italic";
+        p.style.color = "#6a1b9a";
+        container.appendChild(p);
+    });
+}
+loadMoreQuotes();
 
 // Dark/Light Mode
 const themeToggle = document.getElementById("themeToggle");
@@ -137,7 +175,7 @@ function updateCountdown() {
         document.getElementById("countdown").innerText = "Exam date set பண்ணுங்க!";
         return;
     }
-    const daysLeft = Math.ceil((new Date(examDate) - new Date()) / (1000 * 60 * 60 * 24));
+    const daysLeft = Math.ceil((new Date(examDate) - new Date()) / (86400000));
     document.getElementById("countdown").innerText = daysLeft > 0 ? daysLeft + " days left 🔥" : "Exam முடிஞ்சிடுச்சு! Best wishes!";
 }
 function setExamDate() {
@@ -165,3 +203,26 @@ function loadReflection() {
     if (saved) document.getElementById("todayReflection").innerText = "இன்னைக்கு: " + saved;
 }
 loadReflection();
+
+// Moving Bubbles
+function createBubble() {
+    const bubblesContainer = document.getElementById("bubbles");
+    const bubble = document.createElement("div");
+    bubble.classList.add("bubble");
+    
+    const size = Math.random() * 80 + 40 + "px";
+    bubble.style.width = size;
+    bubble.style.height = size;
+    bubble.style.left = Math.random() * 100 + "vw";
+    bubble.style.animationDuration = Math.random() * 20 + 15 + "s";
+    bubble.style.setProperty('--drift', (Math.random() - 0.5) * 2);
+    
+    bubblesContainer.appendChild(bubble);
+    
+    setTimeout(() => bubble.remove(), 35000);
+}
+
+setInterval(createBubble, 2000);
+for (let i = 0; i < 10; i++) {
+    setTimeout(createBubble, i * 1000);
+}
