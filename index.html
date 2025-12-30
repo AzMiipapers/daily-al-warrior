@@ -333,7 +333,25 @@
     <audio id="bgAudio" loop></audio>
 
     <script src="script.js"></script>
-
+<div id="ai-chat-wrapper">
+    <div id="chat-box" class="chat-hidden">
+        <div class="chat-header">
+            <span>🛡️ Warrior AI Helper</span>
+            <button onclick="toggleChat()">×</button>
+        </div>
+        <div id="chat-content">
+            <div class="ai-msg">வணக்கம்! நான் உங்கள் AI உதவியாளர். A/L சம்பந்தமாக எதை வேண்டுமானாலும் கேளுங்கள்.</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') askAI()">
+            <button onclick="askAI()"><span class="material-icons">send</span></button>
+        </div>
+    </div>
+    <button id="chat-toggle-btn" onclick="toggleChat()">
+        <span class="material-icons">psychology</span> AI Help
+    </button>
+</div>
+    
 </body>
 
 </html>
