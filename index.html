@@ -6,7 +6,7 @@
     <title>Daily A/L Warrior Pro | Ultimate Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="light-theme">
@@ -14,10 +14,14 @@
 
     <header id="mainHeader">
         <div class="header-container">
-            <div class="logo" id="mainLogo" onclick="scrollToTop()">
-                <span class="material-icons">shield</span>
-                <h2 id="siteTitle">A/L Warrior Pro</h2>
+            <div class="logo-wrapper" onclick="scrollToTop()">
+                <span class="material-icons logo-icon">shield</span>
+                <div class="logo-text">
+                    <h1 id="siteTitle">A/L Warrior Pro</h1>
+                    <p id="siteSubtitle">Created by ZiM</p>
+                </div>
             </div>
+
             <nav class="nav-links">
                 <button onclick="toggleTheme()" class="icon-btn">🌓</button>
                 <button id="settingsBtn" class="icon-btn">⚙️</button>
