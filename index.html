@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily A/L Warrior</title>
+    <title>Daily A/L Warrior - Official</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="bubbles" id="bubbles"></div>
@@ -27,24 +28,22 @@
     <main class="container">
         <section class="hero card">
             <h1 id="heroTitle">Your Daily Companion for A/L Success</h1>
-            <p id="heroDesc">Official Study Planner & Motivation Hub for Sri Lankan Students.</p>
+            <p id="heroDesc">Official Study Hub for Bio & Maths Students.</p>
         </section>
 
         <section class="card motivation-box">
             <h2 id="motivationHeading">Today's Motivation</h2>
-            <div class="quote-container">
-                <p id="quote">"Believe you can and you're halfway there."</p>
-                <button onclick="newQuote()" class="action-btn">New Quote</button>
-            </div>
+            <p id="quote">"The secret of getting ahead is getting started."</p>
+            <button onclick="newQuote()">New Quote</button>
         </section>
 
         <section class="card countdown-box">
             <h2>⏰ Exam Countdown</h2>
             <div class="input-row">
                 <input type="date" id="examDateInput">
-                <button onclick="setExamDate()" class="action-btn">Set Date</button>
+                <button onclick="setExamDate()">Set Date</button>
             </div>
-            <div id="countdown" class="timer-text">Select your exam date</div>
+            <div id="countdown" class="timer-text">Set your exam date!</div>
         </section>
 
         <div class="dashboard-grid">
@@ -66,19 +65,78 @@
                 <ul id="taskList"></ul>
             </section>
         </div>
+
+        <section class="card flashcard-box">
+            <h2><span class="material-icons">psychology</span> Bio & Maths Flashcards</h2>
+            <div id="flashcard" class="flashcard" onclick="flipCard()">
+                <div id="cardContent">Click 'Next' to start revision!</div>
+            </div>
+            <button onclick="nextCard()" style="margin-top:15px; width: 100%;">Next Card</button>
+        </section>
+
+        <section class="card progress-box">
+            <h2>Syllabus Progress</h2>
+            <div class="input-row">
+                <input type="text" id="subjectInput" placeholder="Subject/Lesson Name">
+                <button onclick="addSubject()">Add</button>
+            </div>
+            <div id="subjectsList"></div>
+            <div class="overall">
+                <p>Overall Progress: <span id="overallPercent">0%</span></p>
+                <div class="progress-bar"><div id="progressFill"></div></div>
+            </div>
+        </section>
+
+        <div class="dashboard-grid">
+            <section class="card water-box">
+                <h2>💧 Water Tracker</h2>
+                <p>Drank: <span id="waterCount">0</span> / 8 Glasses</p>
+                <button onclick="addWater()" style="width:100%">Drink 1 Glass</button>
+            </section>
+
+            <section class="card music-box">
+                <h2>🎵 Study Music</h2>
+                <div class="music-controls">
+                    <button onclick="playMusic('lofi')">Lofi</button>
+                    <button onclick="playMusic('rain')">Rain</button>
+                    <button onclick="stopMusic()">Stop</button>
+                </div>
+                <audio id="studyAudio" loop></audio>
+            </section>
+        </div>
+
+        <section class="card reflection-box">
+            <h2 id="reflectionHeading">✨ What Did I Learn Today?</h2>
+            <textarea id="reflectionInput" placeholder="Today I learned..."></textarea>
+            <button onclick="saveReflection()" style="width:100%">Save Reflection</button>
+            <p id="todayReflection" style="margin-top:10px; font-style: italic;"></p>
+        </section>
     </main>
 
     <div id="settingsModal" class="modal">
         <div class="modal-content card">
-            <h3>Settings</h3>
-            <label>Language</label>
-            <select id="langSelect" onchange="switchLanguage(this.value)">
-                <option value="en">English</option>
-                <option value="ta">Tamil (தமிழ்)</option>
-            </select>
-            <button id="closeSettings" class="action-btn">Close</button>
+            <h3>⚙️ Settings</h3>
+            <div class="setting-item">
+                <label>Your Name:</label>
+                <input type="text" id="userNameInput" placeholder="Enter name...">
+            </div>
+            <div class="setting-item">
+                <label>Language:</label>
+                <select id="langSelect">
+                    <option value="en">English</option>
+                    <option value="ta">Tamil (தமிழ்)</option>
+                </select>
+            </div>
+            <div class="setting-btn-group">
+                <button onclick="saveSettings()">Save & Close</button>
+                <button onclick="resetAllData()" style="background: #e74c3c;">Reset All</button>
+            </div>
         </div>
     </div>
+
+    <footer>
+        <p>&copy; 2025 Daily A/L Warrior | Built for Success</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
