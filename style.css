@@ -1,145 +1,71 @@
-/* Color Palette */
 :root {
     --purple: #6a1b9a;
-    --light-purple: #f3e5f5;
     --dark-purple: #4a148c;
+    --light-purple: #f3e5f5;
     --white: #ffffff;
-    --bg: #f8f7ff;
+    --bg: #f5f0ff;
     --text: #333;
 }
 
 body {
     font-family: 'Roboto', sans-serif;
-    margin: 0;
-    background-color: var(--bg);
-    color: var(--text);
-    transition: 0.3s ease;
+    margin: 0; background: var(--bg); color: var(--text);
+    transition: 0.3s; overflow-x: hidden;
 }
 
-/* --- Header & Centered Logo --- */
+/* --- Header & Navigation --- */
 header {
-    background: var(--purple);
-    color: white;
-    padding: 20px 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    transition: all 0.4s ease-in-out;
+    background: var(--purple); color: white; padding: 25px 0;
+    position: sticky; top: 0; z-index: 1000; transition: 0.4s ease-in-out;
 }
 
 .header-container {
-    max-width: 1100px;
-    margin: auto;
-    display: flex;
-    flex-direction: column; /* ஆரம்பத்தில் லோகோ நடுவில் இருக்க */
-    align-items: center;
-    gap: 15px;
-    padding: 0 20px;
+    max-width: 1100px; margin: auto; padding: 0 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 15px;
 }
 
-/* ஸ்க்ரோல் செய்யும்போது லோகோ ஓரமாக மாற */
-header.scrolled {
-    padding: 10px 0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+/* ஸ்க்ரோல் செய்யும்போது லோகோ சிறியதாகி ஓரத்திற்குச் செல்லும் */
+header.scrolled { padding: 10px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+header.scrolled .header-container { flex-direction: row; justify-content: space-between; }
 
-header.scrolled .header-container {
-    flex-direction: row;
-    justify-content: space-between;
-}
+.logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.logo h2 { margin: 0; font-size: 1.5rem; }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-}
-
-.nav-links {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
+.nav-links { display: flex; gap: 15px; align-items: center; }
 
 /* --- Cards UI --- */
-.container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
+.container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+.card {
+    background: var(--white); border-radius: 20px; padding: 25px;
+    margin-bottom: 25px; box-shadow: 0 8px 20px rgba(106, 27, 154, 0.1);
 }
 
-.card {
-    background: var(--white);
-    padding: 30px;
-    border-radius: 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 10px 25px rgba(106, 27, 154, 0.08);
+/* --- Inputs & Progress --- */
+input[type="text"], input[type="date"], textarea, select {
+    width: 100%; padding: 12px; margin: 10px 0;
+    border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box;
 }
+
+.progress-bar { width: 100%; background: #eee; border-radius: 10px; height: 15px; overflow: hidden; margin: 10px 0; }
+#progressFill { height: 100%; background: var(--purple); width: 0%; transition: 0.5s; }
 
 /* --- Buttons --- */
-button, .primary-btn {
-    background: var(--purple);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.3s;
+button {
+    background: var(--purple); color: white; border: none;
+    padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;
 }
+button:hover { background: var(--dark-purple); transform: scale(1.02); }
 
-button:hover {
-    background: var(--dark-purple);
-    transform: translateY(-2px);
-}
-
-/* --- Settings Modal --- */
+/* --- Modal --- */
 .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(5px);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
 }
-
-.modal-content {
-    width: 350px;
-    text-align: center;
-}
-
-.modal-content h3 { color: var(--purple); }
-
-select {
-    width: 100%;
-    padding: 10px;
-    margin: 20px 0;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-/* --- Countdown & Timer Text --- */
-.timer-text {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: var(--purple);
-    text-align: center;
-    margin-top: 20px;
-}
+.modal-content { width: 320px; text-align: center; }
 
 /* --- Bubbles --- */
 .bubble {
-    position: fixed;
-    bottom: -100px;
-    background: rgba(106, 27, 154, 0.1);
-    border-radius: 50%;
-    z-index: -1;
-    animation: floatUp linear infinite;
+    position: fixed; bottom: -100px; background: rgba(106, 27, 154, 0.1);
+    border-radius: 50%; z-index: -1; animation: floatUp linear infinite;
 }
-
-@keyframes floatUp {
-    to { transform: translateY(-120vh); opacity: 0; }
-}
+@keyframes floatUp { to { transform: translateY(-110vh); opacity: 0; } }
