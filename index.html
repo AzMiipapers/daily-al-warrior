@@ -3,124 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily A/L Warrior - Study Planner & Motivation</title>
+    <title>Daily A/L Warrior</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Bubbles Background -->
     <div class="bubbles" id="bubbles"></div>
 
-    <!-- Header -->
-    <header>
+    <header id="mainHeader">
         <div class="header-container">
-            <div class="logo">
+            <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                 <span class="material-icons">auto_stories</span>
                 <h2 id="siteTitle">Daily A/L Warrior</h2>
             </div>
-            <nav>
-                <button id="themeToggle" title="Light/Dark Mode">🌙</button>
-                <button id="settingsBtn" title="Settings">⚙️</button>
-                <button id="loginBtn">Login</button>
+            <nav class="nav-links">
+                <button id="themeToggle" class="icon-btn">🌙</button>
+                <button id="settingsBtn" class="icon-btn">⚙️</button>
+                <button id="loginBtn" class="primary-btn">Login</button>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1 id="heroTitle">Your Daily Companion for A/L Success</h1>
-        <p id="heroDesc">Study Planner, Pomodoro Timer, Syllabus Tracker & Daily Motivation – All in One Place!</p>
-        <button class="start-btn" onclick="document.getElementById('dashboard').scrollIntoView({behavior: 'smooth'})">Start Now 🚀</button>
-    </section>
+    <main class="container">
+        <section class="hero card">
+            <h1 id="heroTitle">Your Daily Companion for A/L Success</h1>
+            <p id="heroDesc">Official Study Planner & Motivation Hub for Sri Lankan Students.</p>
+        </section>
 
-    <!-- Dashboard -->
-    <section id="dashboard" class="container">
-
-        <!-- Daily Motivation Quote -->
-        <div class="quote-box">
+        <section class="card motivation-box">
             <h2 id="motivationHeading">Today's Motivation</h2>
-            <p id="quote">"Success is rising every time you fall!"</p>
-            <button onclick="newQuote()">New Quote</button>
-        </div>
-
-        <!-- Enhanced Exam Countdown -->
-        <div class="countdown-box">
-            <h2 id="countdownHeading">⏰ A/L Exam Countdown</h2>
-            <input type="date" id="examDateInput">
-            <button onclick="setExamDate()">Set Exam Date</button>
-            <p id="countdown" class="big-countdown">Set your exam date!</p>
-        </div>
-
-        <!-- Daily Past Paper MCQ Quiz -->
-        <div class="quiz-box">
-            <h2 id="quizHeading">Daily Past Paper MCQ Quiz</h2>
-            <p>Test yourself with 5 random A/L questions!</p>
-            <button onclick="startQuiz()">Start Quiz</button>
-            <div id="quizArea" style="display:none;">
-                <p id="question"></p>
-                <div id="options"></div>
-                <button id="nextBtn" style="display:none;" onclick="nextQuestion()">Next</button>
-                <p id="result"></p>
+            <div class="quote-container">
+                <p id="quote">"Believe you can and you're halfway there."</p>
+                <button onclick="newQuote()" class="action-btn">New Quote</button>
             </div>
-        </div>
+        </section>
 
-        <!-- Other sections (Pomodoro, Tasks, Progress, Reflection, More Quotes, About) remain same as previous -->
-        <!-- Pomodoro Timer -->
-        <div class="timer-box">
-            <h2>Pomodoro Timer</h2>
-            <div id="timer">25:00</div>
-            <button onclick="startTimer()">Start</button>
-            <button onclick="resetTimer()">Reset</button>
-        </div>
+        <section class="card countdown-box">
+            <h2>⏰ Exam Countdown</h2>
+            <div class="input-row">
+                <input type="date" id="examDateInput">
+                <button onclick="setExamDate()" class="action-btn">Set Date</button>
+            </div>
+            <div id="countdown" class="timer-text">Select your exam date</div>
+        </section>
 
-        <!-- To-Do List -->
-        <div class="todo-box">
-            <h2 id="tasksHeading">Today's Tasks</h2>
-            <input type="text" id="taskInput" placeholder="Add a task...">
-            <button onclick="addTask()">Add</button>
-            <ul id="taskList"></ul>
-        </div>
-
-        <!-- Syllabus Progress -->
-        <div class="progress-box">
-            <h2>Syllabus Progress</h2>
-            <input type="text" id="subjectInput" placeholder="Add Subject (e.g., Physics)">
-            <button onclick="addSubject()">Add Subject</button>
-            <div id="subjectsList"></div>
-            <div class="overall-progress">
-                <h3>Overall: <span id="overallPercent">0%</span></h3>
-                <div class="progress-bar">
-                    <div id="progressFill" style="width:0%"></div>
+        <div class="dashboard-grid">
+            <section class="card timer-box">
+                <h2>Focus Timer</h2>
+                <div id="timer">25:00</div>
+                <div class="controls">
+                    <button onclick="startTimer()">Start</button>
+                    <button onclick="resetTimer()">Reset</button>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- Daily Reflection -->
-        <div class="reflection-box">
-            <h2 id="reflectionHeading">✨ What Did I Learn Today?</h2>
-            <textarea id="reflectionInput" placeholder="Today I learned..."></textarea>
-            <button onclick="saveReflection()">Save</button>
-            <p id="todayReflection"></p>
+            <section class="card todo-box">
+                <h2>Today's Tasks</h2>
+                <div class="input-row">
+                    <input type="text" id="taskInput" placeholder="Add task...">
+                    <button onclick="addTask()">Add</button>
+                </div>
+                <ul id="taskList"></ul>
+            </section>
         </div>
+    </main>
 
-        <!-- More Quotes & About -->
-        <div class="quote-box">
-            <h2>More Inspirational Quotes</h2>
-            <div id="extraQuotes"></div>
-            <button onclick="loadMoreQuotes()">Load More</button>
+    <div id="settingsModal" class="modal">
+        <div class="modal-content card">
+            <h3>Settings</h3>
+            <label>Language</label>
+            <select id="langSelect" onchange="switchLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="ta">Tamil (தமிழ்)</option>
+            </select>
+            <button id="closeSettings" class="action-btn">Close</button>
         </div>
-
-        <div class="about-box">
-            <h2>About This Tool</h2>
-            <p>Daily A/L Warrior is a free tool created for Sri Lankan GCE A/L students.</p>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Daily A/L Warrior | All Rights Reserved</p>
-    </footer>
+    </div>
 
     <script src="script.js"></script>
 </body>
