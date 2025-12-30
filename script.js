@@ -1,131 +1,118 @@
-// --- 1. Infinite Quotes System ---
+// --- 1. Infinite Quotes ---
 const quotes = [
     "Success is rising every time you fall!",
-    "Work hard in silence, let your success be your noise.",
-    "Don't stop when you're tired. Stop when you're done.",
+    "It always seems impossible until it's done.",
     "The secret of getting ahead is getting started.",
-    "A/L is not just an exam, it's a test of your character.",
-    "Focus on your goals, the map will show itself.",
-    "Believe in yourself and you are halfway there."
+    "Study like there's no tomorrow.",
+    "Hard work beats talent when talent doesn't work hard.",
+    "Don't wish for it, work for it.",
+    "Your future is created by what you do today."
 ];
 
 function newQuote() {
-    const quoteElement = document.getElementById("quote");
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    
-    // Smooth transition effect
-    quoteElement.style.opacity = 0;
-    setTimeout(() => {
-        quoteElement.innerText = `"${quotes[randomIndex]}"`;
-        quoteElement.style.opacity = 1;
-    }, 300);
+    const q = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("quote").innerText = `"${q}"`;
 }
 
-// --- 2. Header & Centered Logo Control ---
+// --- 2. Header Scroll Effect ---
 window.onscroll = function() {
-    const header = document.getElementById("mainHeader");
-    if (window.scrollY > 80) {
-        header.classList.add("scrolled");
-    } else {
-        header.classList.remove("scrolled");
-    }
+    const header = document.querySelector("header");
+    if (window.scrollY > 50) { header.classList.add("scrolled"); }
+    else { header.classList.remove("scrolled"); }
 };
 
-// --- 3. Settings Modal Logic ---
+// --- 3. Settings Modal ---
 const modal = document.getElementById("settingsModal");
-const settingsBtn = document.getElementById("settingsBtn");
-const closeBtn = document.getElementById("closeSettings");
+document.getElementById("settingsBtn").onclick = () => modal.style.display = "flex";
+document.getElementById("closeSettings").onclick = () => modal.style.display = "none";
 
-settingsBtn.onclick = () => modal.style.display = "flex";
-closeBtn.onclick = () => modal.style.display = "none";
-
-// Modal-க்கு வெளியே கிளிக் செய்தால் மூட
-window.onclick = (event) => {
-    if (event.target == modal) modal.style.display = "none";
-};
-
-// --- 4. Exam Countdown Logic ---
+// --- 4. Exam Countdown ---
 function setExamDate() {
-    const dateInput = document.getElementById("examDateInput").value;
-    if (dateInput) {
-        localStorage.setItem("alExamDate", dateInput);
-        startCountdown();
-    }
+    const date = document.getElementById("examDateInput").value;
+    if (date) { localStorage.setItem("examDate", date); updateCountdown(); }
 }
 
-function startCountdown() {
-    const targetDate = localStorage.getItem("alExamDate");
-    if (!targetDate) return;
-
+function updateCountdown() {
+    const target = localStorage.getItem("examDate");
+    if (!target) return;
+    
     setInterval(() => {
-        const now = new Date().getTime();
-        const distance = new Date(targetDate).getTime() - now;
-
-        if (distance < 0) {
-            document.getElementById("countdown").innerText = "Exam Started! All the Best!";
-            return;
-        }
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("countdown").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s left 🔥`;
+        const diff = new Date(target) - new Date();
+        if (diff < 0) { document.getElementById("countdown").innerText = "Best Wishes!"; return; }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        document.getElementById("countdown").innerText = `${d}d ${h}h ${m}m ${s}s left 🔥`;
     }, 1000);
 }
 
-// --- 5. Pomodoro Timer ---
-let timer;
-let timeLeft = 25 * 60;
+// --- 5. Syllabus Tracker ---
+let subjects = [];
+function addSubject() {
+    const name = document.getElementById("subjectInput").value;
+    if (!name) return;
+    subjects.push({ name, done: false });
+    document.getElementById("subjectInput").value = "";
+    renderSyllabus();
+}
 
+function renderSyllabus() {
+    const list = document.getElementById("subjectsList");
+    list.innerHTML = "";
+    let doneCount = 0;
+    subjects.forEach((s, i) => {
+        if (s.done) doneCount++;
+        list.innerHTML += `<div><input type="checkbox" ${s.done ? 'checked' : ''} onchange="toggleSub(${i})"> ${s.name}</div>`;
+    });
+    const percent = subjects.length ? Math.round((doneCount / subjects.length) * 100) : 0;
+    document.getElementById("overallPercent").innerText = percent + "%";
+    document.getElementById("progressFill").style.width = percent + "%";
+}
+function toggleSub(i) { subjects[i].done = !subjects[i].done; renderSyllabus(); }
+
+// --- 6. Pomodoro Timer ---
+let timeLeft = 1500;
+let timerId = null;
 function startTimer() {
-    if (timer) return;
-    timer = setInterval(() => {
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            alert("Focus time is over! Take a break.");
-        } else {
-            timeLeft--;
-            const m = Math.floor(timeLeft / 60);
-            const s = timeLeft % 60;
-            document.getElementById("timer").innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
+    if (timerId) return;
+    timerId = setInterval(() => {
+        timeLeft--;
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        document.getElementById("timer").innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        if (timeLeft <= 0) clearInterval(timerId);
     }, 1000);
 }
+function resetTimer() { clearInterval(timerId); timerId = null; timeLeft = 1500; document.getElementById("timer").innerText = "25:00"; }
 
-function resetTimer() {
-    clearInterval(timer);
-    timer = null;
-    timeLeft = 25 * 60;
-    document.getElementById("timer").innerText = "25:00";
-}
-
-// --- 6. Task List ---
+// --- 7. Task List ---
 function addTask() {
-    const input = document.getElementById("taskInput");
-    if (input.value.trim() === "") return;
+    const val = document.getElementById("taskInput").value;
+    if (!val) return;
     const li = document.createElement("li");
-    li.style.padding = "10px 0";
-    li.style.borderBottom = "1px solid #eee";
-    li.innerHTML = `✅ ${input.value} <span onclick="this.parentElement.remove()" style="cursor:pointer; float:right; color:red">❌</span>`;
+    li.innerHTML = `✅ ${val} <button onclick="this.parentElement.remove()" style="padding:2px 5px; background:red; margin-left:10px;">X</button>`;
     document.getElementById("taskList").appendChild(li);
-    input.value = "";
+    document.getElementById("taskInput").value = "";
 }
 
-// --- 7. Bubbles Creation ---
+// --- 8. Reflection ---
+function saveReflection() {
+    const val = document.getElementById("reflectionInput").value;
+    document.getElementById("todayReflection").innerText = "Saved: " + val;
+}
+
+// --- 9. Bubbles ---
 function createBubble() {
     const b = document.createElement("div");
     b.className = "bubble";
-    const size = Math.random() * 40 + 20 + "px";
-    b.style.width = size;
-    b.style.height = size;
     b.style.left = Math.random() * 100 + "vw";
-    b.style.animationDuration = Math.random() * 6 + 4 + "s";
-    document.getElementById("bubbles").appendChild(b);
+    const s = Math.random() * 40 + 20 + "px";
+    b.style.width = s; b.style.height = s;
+    b.style.animationDuration = Math.random() * 5 + 5 + "s";
+    document.body.appendChild(b);
     setTimeout(() => b.remove(), 10000);
 }
 setInterval(createBubble, 1500);
 
-// Initialize
-window.onload = startCountdown;
+window.onload = updateCountdown;
