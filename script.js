@@ -218,20 +218,10 @@ document.getElementById("settingsBtn").onclick = () => document.getElementById("
 document.getElementById("closeSettings").onclick = () => document.getElementById("settingsModal").style.display = "none";
 function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 function factoryReset() { if(confirm("Delete all data?")) { localStorage.clear(); location.reload(); } }
-
-// --- script.js ---
-
-// உங்கள் API Key
-const GEMINI_API_KEY = "AIzaSyCbSVDxcodFhiKcbZaOscwJ8ac9GfD65lA"; 
-
-function toggleChat() {
-    const chatBox = document.getElementById("chat-box");
-    if (chatBox) {
-        chatBox.classList.toggle("chat-hidden");
-    }
-}
-
 async function askAI() {
+    // 1. உங்கள் புதிய API Key-ஐ இங்கே பேஸ்ட் செய்யுங்கள்
+    const GEMINI_API_KEY = "AIzaSyCbSVDxcodFhiKcbZaOscwJ8ac9GfD65lA"; 
+
     const inputField = document.getElementById("userInput");
     const chatContent = document.getElementById("chat-content");
     const query = inputField.value.trim();
@@ -240,7 +230,6 @@ async function askAI() {
 
     chatContent.innerHTML += `<div class="user-msg">${query}</div>`;
     inputField.value = "";
-    chatContent.scrollTop = chatContent.scrollHeight;
 
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "ai-msg";
@@ -248,7 +237,7 @@ async function askAI() {
     chatContent.appendChild(loadingDiv);
 
     try {
-        // இப்போது மிகவும் நிலையான (Stable) 'gemini-1.5-flash' மாடலை 'v1' API மூலம் அழைக்கிறோம்
+        // v1 URL மற்றும் சரியான மாடல் பெயர் பயன்படுத்தப்பட்டுள்ளது
         const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -261,16 +250,13 @@ async function askAI() {
 
         if (data.candidates && data.candidates[0].content.parts[0].text) {
             loadingDiv.innerText = data.candidates[0].content.parts[0].text;
-        } else if (data.error) {
-            // பிழை வந்தால் அது என்னவென்று இங்கே தெளிவாகத் தெரியும்
-            loadingDiv.innerText = "Error: " + data.error.message;
-            console.error("Full Error Data:", data);
         } else {
-            loadingDiv.innerText = "பதில் கிடைக்கவில்லை, மீண்டும் முயலவும்.";
+            // ஒருவேளை மீண்டும் பிழை வந்தால் அதன் காரணத்தைக் காட்டும்
+            loadingDiv.innerText = "Error: " + (data.error ? data.error.message : "Try again later");
+            console.log(data); 
         }
     } catch (error) {
         loadingDiv.innerText = "இணைய இணைப்பைச் சரிபார்க்கவும்.";
     }
-    
     chatContent.scrollTop = chatContent.scrollHeight;
 }
