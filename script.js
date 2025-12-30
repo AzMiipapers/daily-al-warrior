@@ -1,54 +1,108 @@
-// --- 1. Global State & Storage ---
+// --- Initial State ---
 let timeLeft = 1500;
 let timerObj = null;
+let roadmap = JSON.parse(localStorage.getItem('roadmap')) || [];
 let units = JSON.parse(localStorage.getItem('units')) || [];
+let waterCount = localStorage.getItem('water') || 0;
+let myChart = null;
 let currentFactIdx = -1;
 let isFlipped = false;
-let waterCount = localStorage.getItem('water') || 0;
 
-// --- 2. Infinite Quotes & Translation Data ---
+// --- Quotes Data ---
 const quotes = [
-    "A/L is a marathon, not a sprint. Keep going!",
-    "Success is what you do every single day.",
-    "Small steps lead to big university gates.",
-    "Study like your dream depends on it.",
-    "Maths/Bio is hard, but you are harder."
+    "A/L is a marathon, keep your pace steady!",
+    "Success is the sum of small efforts repeated daily.",
+    "Don't study to finish, study to understand.",
+    "Your future self will thank you for today's hard work.",
+    "Combined Maths/Bio is hard, but you are a Warrior!"
 ];
 
 const facts = {
-    bio: [{q:"Unit of Kidney?", a:"Nephron"}, {q:"Who discovered Cells?", a:"Robert Hooke"}, {q:"Powerhouse?", a:"Mitochondria"}],
-    maths: [{q:"d/dx of tan x?", a:"sec² x"}, {q:"Sum of angles?", a:"180°"}, {q:"Integral of e^x?", a:"e^x + C"}]
+    bio: [{q:"Unit of Nervous System?", a:"Neuron"}, {q:"Who discovered DNA structure?", a:"Watson and Crick"}],
+    maths: [{q:"d/dx of tan(x)?", a:"sec²(x)"}, {q:"Integral of 1/x?", a:"ln|x| + C"}]
 };
 
 const translations = {
-    ta: { welcome: "வணக்கம், மாணவரே!", grade: "📊 தரம் கணித்தல்", timer: "கவன நேரம்", music: "🌿 அமைதியான சூழல்", cd: "தேர்வு கவுண்ட்டவுன்", note: "📝 குறிப்புகள்", prog: "பாட முன்னேற்றம்" },
-    en: { welcome: "Welcome back, Warrior", grade: "📊 Grade Predictor", timer: "Focus Timer", music: "🌿 Study Ambience", cd: "Exam Countdown", note: "📝 Quick Study Notes", prog: "Unit Master Tracker" }
+    ta: { welcome: "வணக்கம், போர்வீரரே!", roadmap: "🗺️ பாடத் திட்டம் & கடினத்தன்மை", graph: "📊 தேர்ச்சி பகுப்பாய்வு", timer: "கவன நேரம்", music: "🌿 அமைதியான சூழல்", water: "💧 தண்ணீர் டிராக்கர்", note: "📝 குறிப்புகள்", unit: "📚 பாட அலகுகள்" },
+    en: { welcome: "Welcome, Warrior", roadmap: "🗺️ Subject Roadmap", graph: "📊 Mastery Analysis", timer: "Focus Pomodoro", music: "🌿 Study Ambience", water: "💧 Water Tracker", note: "📝 Study Notes", unit: "📚 Syllabus Unit Master" }
 };
 
-// --- 3. Header & UI Logic ---
+// --- Core Functions ---
 window.onscroll = () => {
     const h = document.getElementById("mainHeader");
     window.scrollY > 50 ? h.classList.add("scrolled") : h.classList.remove("scrolled");
 };
-function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+
 function toggleTheme() {
     document.body.classList.toggle("dark-theme");
     localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
 }
 
-// --- 4. Main Features ---
-function newQuote() { document.getElementById("quote").innerText = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`; }
+function generateQuote() { document.getElementById("quoteText").innerText = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`; }
 
-function predictGrade() {
-    const marks = document.getElementById("marksInput").value;
-    let g = marks >= 75 ? "A" : marks >= 65 ? "B" : marks >= 55 ? "C" : marks >= 35 ? "S" : "W";
-    document.getElementById("gradeResult").innerText = marks ? `Result: ${g}` : "-";
+// --- Roadmap & Graph Logic ---
+function addTopic() {
+    const sub = document.getElementById("subSelect").value;
+    const topic = document.getElementById("topicInput").value;
+    const diff = document.getElementById("diffSelect").value;
+    const date = document.getElementById("deadlineInput").value;
+
+    if(!topic || !date) return alert("Fill all fields!");
+    roadmap.push({ sub, topic, diff, date });
+    document.getElementById("topicInput").value = "";
+    saveAndRender();
 }
 
+function deleteTopic(i) { roadmap.splice(i, 1); saveAndRender(); }
+
+function saveAndRender() {
+    localStorage.setItem('roadmap', JSON.stringify(roadmap));
+    const list = document.getElementById("topicList");
+    list.innerHTML = "";
+    
+    roadmap.forEach((item, i) => {
+        const daysLeft = Math.ceil((new Date(item.date) - new Date()) / (86400000));
+        list.innerHTML += `
+            <div class="topic-item ${item.diff}">
+                <div>
+                    <strong>${item.sub}: ${item.topic}</strong><br>
+                    <small>${item.diff} | ${daysLeft < 0 ? 'Overdue' : daysLeft + ' days left'}</small>
+                </div>
+                <button onclick="deleteTopic(${i})" style="padding:5px 10px; background:#ef4444;">Done</button>
+            </div>
+        `;
+    });
+    updateChart();
+    updateSmartSuggestion();
+}
+
+function updateChart() {
+    const ctx = document.getElementById('masteryChart').getContext('2d');
+    const counts = { Easy: 0, Normal: 0, Hard: 0 };
+    roadmap.forEach(item => counts[item.diff]++);
+
+    if (myChart) myChart.destroy();
+    myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Easy', 'Normal', 'Hard'],
+            datasets: [{ data: [counts.Easy, counts.Normal, counts.Hard], backgroundColor: ['#22c55e', '#eab308', '#ef4444'], borderWidth: 0 }]
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+}
+
+function updateSmartSuggestion() {
+    const hards = roadmap.filter(t => t.diff === 'Hard');
+    const text = document.getElementById("smartSuggestion");
+    text.innerText = hards.length > 0 ? `Priority: Focus on "${hards[0].topic}" (${hards[0].sub}). It's tough!` : "Great job! Keep moving through your roadmap.";
+}
+
+// --- Tools Logic ---
 function startTimer() {
     if(timerObj) return;
     timerObj = setInterval(() => {
-        if(timeLeft <= 0) { clearInterval(timerObj); alert("Focus Session Done!"); resetTimer(); return; }
+        if(timeLeft <= 0) { clearInterval(timerObj); alert("Break time!"); resetTimer(); return; }
         timeLeft--; updateTimerUI();
     }, 1000);
 }
@@ -64,10 +118,9 @@ function playSound(t) {
     audio.src = src[t]; audio.play();
 }
 function stopSound() { document.getElementById("bgAudio").pause(); }
-
 function addWater() { waterCount++; localStorage.setItem('water', waterCount); document.getElementById("waterCount").innerText = waterCount; }
 
-// --- 5. Flashcards & Stream Logic ---
+// --- Flashcards ---
 function nextCard() {
     const stream = localStorage.getItem("stream") || "bio";
     currentFactIdx = Math.floor(Math.random() * facts[stream].length);
@@ -75,35 +128,12 @@ function nextCard() {
     isFlipped = false;
 }
 function flipCard() {
-    if(currentFactIdx === -1) return;
     const stream = localStorage.getItem("stream") || "bio";
     document.getElementById("cardContent").innerText = isFlipped ? facts[stream][currentFactIdx].q : facts[stream][currentFactIdx].a;
     isFlipped = !isFlipped;
 }
 
-// --- 6. Settings & Localization ---
-function applySettings() {
-    const profile = { name: document.getElementById("nameInp").value, stream: document.getElementById("streamInp").value, lang: document.getElementById("langInp").value };
-    localStorage.setItem("profile", JSON.stringify(profile));
-    localStorage.setItem("stream", profile.stream);
-    
-    document.getElementById("welcomeText").innerText = profile.name ? `Welcome, ${profile.name}` : translations[profile.lang].welcome;
-    document.getElementById("streamLabel").innerText = profile.stream === 'bio' ? "Biology Stream" : "Maths Stream";
-    document.getElementById("activeStream").innerText = profile.stream.toUpperCase();
-    
-    const t = translations[profile.lang];
-    document.getElementById("gradeHeading").innerText = t.grade;
-    document.getElementById("timerHeading").innerText = t.timer;
-    document.getElementById("musicHeading").innerText = t.music;
-    document.getElementById("cdHeading").innerText = t.cd;
-    document.getElementById("noteHeading").innerText = t.note;
-    document.getElementById("progHeading").innerText = t.prog;
-
-    document.getElementById("settingsModal").style.display = "none";
-    nextCard();
-}
-
-// --- 7. Syllabus & Persistence ---
+// --- Units ---
 function addUnit() {
     const v = document.getElementById("unitInput").value;
     if(!v) return;
@@ -114,46 +144,58 @@ function addUnit() {
 function renderUnits() {
     localStorage.setItem('units', JSON.stringify(units));
     const list = document.getElementById("unitList"); list.innerHTML = "";
-    let doneCount = 0;
+    let done = 0;
     units.forEach((u, i) => {
-        if(u.done) doneCount++;
+        if(u.done) done++;
         list.innerHTML += `<div class="input-row"><input type="checkbox" onchange="units[${i}].done=!units[${i}].done;renderUnits()" ${u.done?'checked':''}> ${u.name}</div>`;
     });
-    const p = units.length ? Math.round((doneCount/units.length)*100) : 0;
-    document.getElementById("progressPercent").innerText = p + "%";
-    document.getElementById("masterProgress").style.width = p + "%";
+    const p = units.length ? Math.round((done/units.length)*100) : 0;
+    document.getElementById("unitPercent").innerText = p + "% Done";
+    document.getElementById("unitProgressFill").style.width = p + "%";
 }
 
-function saveNote() { localStorage.setItem("note", document.getElementById("notePad").value); }
-function setExamDate() { localStorage.setItem("examDate", document.getElementById("examDateInput").value); runCD(); }
-function runCD() {
-    const target = localStorage.getItem("examDate"); if(!target) return;
-    setInterval(() => {
-        const d = new Date(target) - new Date();
-        if(d < 0) { document.getElementById("countdown").innerText = "Good Luck!"; return; }
-        const days = Math.floor(d/86400000), hrs = Math.floor((d%86400000)/3600000);
-        document.getElementById("countdown").innerText = `${days}d ${hrs}h Left 🔥`;
-    }, 1000);
+// --- Settings & Init ---
+function applySettings() {
+    const name = document.getElementById("nameInp").value;
+    const stream = document.getElementById("streamInp").value;
+    const lang = document.getElementById("langInp").value;
+    localStorage.setItem("profile", JSON.stringify({name, stream, lang}));
+    localStorage.setItem("stream", stream);
+    
+    document.getElementById("welcomeText").innerText = `Welcome, ${name || 'Warrior'}`;
+    document.getElementById("streamLabel").innerText = stream === 'bio' ? "Biology Stream" : "Maths Stream";
+    document.getElementById("activeStreamDisplay").innerText = stream.toUpperCase();
+    
+    const t = translations[lang];
+    document.getElementById("roadmapHeading").innerText = t.roadmap;
+    document.getElementById("graphHeading").innerText = t.graph;
+    document.getElementById("timerHeading").innerText = t.timer;
+    document.getElementById("musicHeading").innerText = t.music;
+    document.getElementById("waterHeading").innerText = t.water;
+    document.getElementById("noteHeading").innerText = t.note;
+    document.getElementById("unitHeading").innerText = t.unit;
+
+    document.getElementById("settingsModal").style.display = "none";
+    nextCard();
 }
 
-// --- 8. Initialization ---
 window.onload = () => {
     if(localStorage.getItem("theme") === "dark") toggleTheme();
-    document.getElementById("notePad").value = localStorage.getItem("note") || "";
-    document.getElementById("waterCount").innerText = waterCount;
     const p = JSON.parse(localStorage.getItem("profile"));
-    if(p) {
+    if(p) { 
         document.getElementById("nameInp").value = p.name;
         document.getElementById("streamInp").value = p.stream;
         document.getElementById("langInp").value = p.lang;
         applySettings();
     }
-    renderUnits(); runCD(); nextCard();
-    // Bubbles
+    document.getElementById("notePad").value = localStorage.getItem("note") || "";
+    document.getElementById("waterCount").innerText = waterCount;
+    saveAndRender(); renderUnits(); runCD(); nextCard();
+    
     setInterval(() => {
         const b = document.createElement("div"); b.className = "bubble";
         b.style.left = Math.random() * 100 + "vw";
-        const s = Math.random() * 30 + 20 + "px";
+        const s = Math.random() * 30 + 15 + "px";
         b.style.width = s; b.style.height = s;
         b.style.animationDuration = Math.random() * 4 + 4 + "s";
         document.getElementById("bubbles-container").appendChild(b);
@@ -161,6 +203,18 @@ window.onload = () => {
     }, 2000);
 };
 
+function saveNote() { localStorage.setItem("note", document.getElementById("notePad").value); }
+function setExamDate() { localStorage.setItem("ed", document.getElementById("examDateInput").value); runCD(); }
+function runCD() {
+    const ed = localStorage.getItem("ed"); if(!ed) return;
+    setInterval(() => {
+        const diff = new Date(ed) - new Date();
+        if(diff < 0) return;
+        document.getElementById("countdown").innerText = Math.floor(diff/86400000) + " Days Left 🔥";
+    }, 1000);
+}
+
 document.getElementById("settingsBtn").onclick = () => document.getElementById("settingsModal").style.display = "flex";
 document.getElementById("closeSettings").onclick = () => document.getElementById("settingsModal").style.display = "none";
-function resetAllData() { if(confirm("Are you sure? This will delete all your progress!")) { localStorage.clear(); location.reload(); } }
+function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+function factoryReset() { if(confirm("Delete all data?")) { localStorage.clear(); location.reload(); } }
