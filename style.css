@@ -1,19 +1,68 @@
-:root { --p: #6366f1; --pd: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --accent: #e2e8f0; }
-body.dark-theme { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #334155; }
+:root {
+    --p: #6366f1; --pd: #4f46e5;
+    /* Changed Light Mode Background from #f8fafc to a softer, better looking grey-blue */
+    --bg: #f3f4f6;
+    --card: #ffffff; --text: #1e293b; --accent: #e2e8f0;
+}
+body.dark-theme {
+    --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #334155;
+}
 
 body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg); color: var(--text); transition: 0.3s ease; }
 
-/* Sticky Header Scroll Animation */
-header { background: var(--card); padding: 35px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--accent); transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-.header-container { max-width: 1100px; margin: auto; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-header.scrolled { padding: 12px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-header.scrolled .header-container { flex-direction: row; justify-content: space-between; }
+/* --- Header & Centered Logo Styles --- */
+header {
+    background: var(--card); padding: 40px 0; /* Increased padding for bigger center look */
+    position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--accent);
+    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.header-container {
+    max-width: 1100px; margin: auto; display: flex;
+    flex-direction: column; align-items: center; gap: 20px;
+}
 
+/* Logo Wrapper styling */
+.logo-wrapper {
+    display: flex; align-items: center; gap: 15px; cursor: pointer;
+    text-align: center; /* Ensure text is centered */
+}
+.logo-icon { font-size: 3rem; color: var(--p); transition: 0.3s; }
+.logo-text { display: flex; flex-direction: column; }
+
+/* BIG Title Style (Initial State) */
+#siteTitle {
+    font-size: 2.5rem; /* Made it much bigger */
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -1px;
+    line-height: 1.1;
+}
+
+/* Small Subtitle Style */
+#siteSubtitle {
+    margin: 5px 0 0 0;
+    font-size: 0.95rem; /* Small size */
+    font-weight: 500;
+    color: var(--p);
+    opacity: 0.8;
+}
+
+/* --- Scrolled State Overrides (Shrinking) --- */
+header.scrolled { padding: 12px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+header.scrolled .header-container { flex-direction: row; justify-content: space-between; gap: 0; }
+
+/* Shrink elements when scrolled */
+header.scrolled .logo-icon { font-size: 1.8rem; }
+header.scrolled #siteTitle { font-size: 1.5rem; }
+/* Hide subtitle when scrolled to keep it clean */
+header.scrolled #siteSubtitle { display: none; }
+
+
+/* --- Rest of the Dashboard CSS --- */
 .container { max-width: 950px; margin: 40px auto; padding: 0 20px; }
 .card { background: var(--card); border-radius: 24px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--accent); transition: 0.3s; }
 .hero-card { background: linear-gradient(135deg, var(--p), var(--pd)); color: white; padding: 40px; border-radius: 28px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
 
-/* Roadmap Difficulty Styling */
 .roadmap-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
 .topic-grid { display: grid; gap: 12px; }
 .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-radius: 15px; background: var(--bg); border-left: 8px solid #ccc; }
@@ -28,10 +77,10 @@ header.scrolled .header-container { flex-direction: row; justify-content: space-
 .big-timer { font-size: 3.5rem; font-weight: 800; text-align: center; color: var(--p); margin: 15px 0; }
 .flashcard { background: var(--accent); height: 160px; border-radius: 18px; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; padding: 20px; font-weight: 600; font-size: 1.1rem; }
 
-/* Inputs & Buttons */
 input, select, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--accent); background: var(--card); color: var(--text); font-family: inherit; box-sizing: border-box; outline: none; }
 button { background: var(--p); color: white; border: none; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-.secondary { background: var(--accent); color: var(--p); }
+.secondary-btn { background: var(--accent); color: var(--p); }
+.reset-btn { background: #ef4444; color: white; margin-top: 10px; }
 .full-btn { width: 100%; margin-top: 10px; }
 .stop-btn { background: #ef4444; }
 
@@ -42,6 +91,8 @@ button { background: var(--p); color: white; border: none; padding: 12px 20px; b
 .modal-content { background: var(--card); width: 380px; border-radius: 24px; animation: slideIn 0.3s; }
 .modal-header { background: var(--p); color: white; padding: 20px; display: flex; justify-content: space-between; border-radius: 24px 24px 0 0; }
 .modal-body { padding: 20px; }
+.s-row { margin-bottom: 15px; }
 
+@keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .bubble { position: fixed; bottom: -100px; background: var(--p); opacity: 0.08; border-radius: 50%; z-index: -1; animation: floatUp linear infinite; }
 @keyframes floatUp { to { transform: translateY(-120vh); } }
