@@ -218,3 +218,41 @@ document.getElementById("settingsBtn").onclick = () => document.getElementById("
 document.getElementById("closeSettings").onclick = () => document.getElementById("settingsModal").style.display = "none";
 function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 function factoryReset() { if(confirm("Delete all data?")) { localStorage.clear(); location.reload(); } }
+
+const GEMINI_API_KEY = "AIzaSyBLC6enWWKAr3O9ys-4NDjnhch4r1PSw0E"; 
+
+function toggleChat() {
+    document.getElementById("chat-box").classList.toggle("chat-hidden");
+}
+
+async function askAI() {
+    const inputField = document.getElementById("userInput");
+    const chatContent = document.getElementById("chat-content");
+    const query = inputField.value.trim();
+    
+    if (!query) return;
+
+    // மாணவர் மெசேஜ்
+    chatContent.innerHTML += `<div class="user-msg">${query}</div>`;
+    inputField.value = "";
+    chatContent.scrollTop = chatContent.scrollHeight;
+
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: "You are a helpful Sri Lankan A/L student assistant. Answer in the language the student asks (Tamil/English). Question: " + query }] }]
+            })
+        });
+
+        const data = await response.json();
+        const aiResponse = data.candidates[0].content.parts[0].text;
+
+        // AI மெசேஜ்
+        chatContent.innerHTML += `<div class="ai-msg">${aiResponse}</div>`;
+        chatContent.scrollTop = chatContent.scrollHeight;
+    } catch (error) {
+        chatContent.innerHTML += `<div class="ai-msg">மன்னிக்கவும், என்னால் இப்போது பதில் சொல்ல முடியவில்லை. மீண்டும் முயற்சிக்கவும்.</div>`;
+    }
+}
