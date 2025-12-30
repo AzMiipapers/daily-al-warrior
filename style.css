@@ -1,0 +1,97 @@
+body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f7fa;
+    color: #333;
+    transition: background 0.3s, color 0.3s;
+}
+body.dark {
+    background: #121212;
+    color: #e0e0e0;
+}
+header {
+    background: #006064;
+    color: white;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.logo .material-icons { font-size: 36px; }
+nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+#loginBtn {
+    background: #00bcd4;
+    padding: 8px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.hero {
+    background: linear-gradient(to right, #006064, #0097a7);
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+}
+.hero h1 { font-size: 2.8em; margin: 0; }
+.hero p { font-size: 1.3em; margin: 20px 0; }
+.start-btn {
+    background: white;
+    color: #006064;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+.quote-box, .timer-box, .todo-box, .progress-box, .about-box,
+.streak-box, .countdown-box, .reflection-box {
+    background: white;
+    padding: 25px;
+    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+body.dark .quote-box, body.dark .timer-box, body.dark .todo-box,
+body.dark .progress-box, body.dark .about-box, body.dark .streak-box,
+body.dark .countdown-box, body.dark .reflection-box {
+    background: #1e1e1e;
+}
+#timer { font-size: 3.5em; text-align: center; color: #006064; }
+body.dark #timer { color: #00bcd4; }
+button { padding: 10px 15px; background: #00bcd4; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+button:hover { background: #0097a7; }
+input, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin: 10px 0; box-sizing: border-box; }
+#streakCount { font-size: 2.5em; color: #ff5722; font-weight: bold; }
+#countdown { font-size: 1.8em; color: #006064; font-weight: bold; margin-top: 15px; }
+.progress-bar { height: 30px; background: #e0e0e0; border-radius: 15px; overflow: hidden; margin: 15px 0; }
+#progressFill { height: 100%; background: #00bcd4; transition: width 0.5s; }
+footer {
+    text-align: center;
+    padding: 30px;
+    background: #006064;
+    color: white;
+    margin-top: 50px;
+}
