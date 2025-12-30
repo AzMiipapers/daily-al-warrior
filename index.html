@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily A/L Warrior - Study Planner & Motivation</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <span class="material-icons">auto_stories</span>
+                <h2>Daily A/L Warrior</h2>
+            </div>
+            <nav>
+                <button id="themeToggle" title="Light/Dark Mode">🌙</button>
+                <button id="settingsBtn" title="Settings">⚙️</button>
+                <button id="loginBtn">Login</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>உன் A/L வெற்றிக்கான தினசரி துணை</h1>
+        <p>Study Planner, Pomodoro Timer, Syllabus Tracker & Daily Motivation – எல்லாம் ஒரே இடத்தில்!</p>
+        <button class="start-btn" onclick="document.getElementById('dashboard').scrollIntoView({behavior: 'smooth'})">Start Now 🚀</button>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="container">
+
+        <!-- Motivation Quote -->
+        <div class="quote-box">
+            <h2>இன்றைய உத்வேகம்</h2>
+            <p id="quote">"வெற்றி என்பது தோல்வியில் இருந்து எழுந்து நிற்பதுதான்!"</p>
+            <button onclick="newQuote()">புதிய Quote</button>
+        </div>
+
+        <!-- Study Streak & Exam Countdown -->
+        <div class="streak-box">
+            <h2>🔥 Study Streak</h2>
+            <p id="streakCount">0 days</p>
+            <p>இன்னைக்கு study பண்ணினா streak +1 ஆகும்!</p>
+            <button onclick="checkInToday()">இன்னைக்கு Study Done ✅</button>
+        </div>
+
+        <div class="countdown-box">
+            <h2>⏰ A/L Exam Countdown</h2>
+            <input type="date" id="examDateInput">
+            <button onclick="setExamDate()">Set Exam Date</button>
+            <p id="countdown">Exam date set பண்ணுங்க!</p>
+        </div>
+
+        <!-- Pomodoro Timer -->
+        <div class="timer-box">
+            <h2>Pomodoro Timer</h2>
+            <div id="timer">25:00</div>
+            <button onclick="startTimer()">Start</button>
+            <button onclick="resetTimer()">Reset</button>
+        </div>
+
+        <!-- To-Do List -->
+        <div class="todo-box">
+            <h2>இன்றைய Tasks</h2>
+            <input type="text" id="taskInput" placeholder="Task எழுது...">
+            <button onclick="addTask()">Add</button>
+            <ul id="taskList"></ul>
+        </div>
+
+        <!-- Syllabus Progress -->
+        <div class="progress-box">
+            <h2>Syllabus Progress</h2>
+            <input type="text" id="subjectInput" placeholder="Subject Add பண்ணு (e.g., Physics)">
+            <button onclick="addSubject()">Add Subject</button>
+            <div id="subjectsList"></div>
+            <div class="overall-progress">
+                <h3>Overall: <span id="overallPercent">0%</span></h3>
+                <div class="progress-bar">
+                    <div id="progressFill" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Reflection -->
+        <div class="reflection-box">
+            <h2>✨ இன்னைக்கு என்ன Learn பண்ணேன்?</h2>
+            <textarea id="reflectionInput" placeholder="இன்னைக்கு நான்..."></textarea>
+            <button onclick="saveReflection()">Save</button>
+            <p id="todayReflection"></p>
+        </div>
+
+        <!-- About Section -->
+        <div class="about-box">
+            <h2>இந்த Website பற்றி</h2>
+            <p>Daily A/L Warrior என்பது Sri Lankan GCE A/L மாணவர்களுக்காக உருவாக்கப்பட்ட free tool. உங்கள் study routine-ஐ organize பண்ணவும், motivation பெறவும் உதவும்.</p>
+            <p>Made with ❤️ by a fellow A/L warrior!</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Daily A/L Warrior | All Rights Reserved</p>
+        <p>Contact: dailyalwarrior@gmail.com</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
