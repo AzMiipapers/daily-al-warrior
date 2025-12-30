@@ -1,72 +1,77 @@
-// --- 1. State & Constants ---
+// --- 1. Global State & Storage ---
 let timeLeft = 1500;
 let timerObj = null;
 let units = JSON.parse(localStorage.getItem('units')) || [];
 let currentFactIdx = -1;
 let isFlipped = false;
+let waterCount = localStorage.getItem('water') || 0;
+
+// --- 2. Infinite Quotes & Translation Data ---
+const quotes = [
+    "A/L is a marathon, not a sprint. Keep going!",
+    "Success is what you do every single day.",
+    "Small steps lead to big university gates.",
+    "Study like your dream depends on it.",
+    "Maths/Bio is hard, but you are harder."
+];
 
 const facts = {
-    bio: [
-        { q: "Cell membrane structure?", a: "Fluid Mosaic Model" },
-        { q: "Hormone for blood sugar?", a: "Insulin" },
-        { q: "Unit of Kidney?", a: "Nephron" }
-    ],
-    maths: [
-        { q: "d/dx of sin(x)?", a: "cos(x)" },
-        { q: "Integral of 1/x?", a: "ln|x| + C" },
-        { q: "Formula for sin²x + cos²x?", a: "1" }
-    ]
+    bio: [{q:"Unit of Kidney?", a:"Nephron"}, {q:"Who discovered Cells?", a:"Robert Hooke"}, {q:"Powerhouse?", a:"Mitochondria"}],
+    maths: [{q:"d/dx of tan x?", a:"sec² x"}, {q:"Sum of angles?", a:"180°"}, {q:"Integral of e^x?", a:"e^x + C"}]
 };
 
-const sounds = {
-    rain: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    forest: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    lofi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+const translations = {
+    ta: { welcome: "வணக்கம், மாணவரே!", grade: "📊 தரம் கணித்தல்", timer: "கவன நேரம்", music: "🌿 அமைதியான சூழல்", cd: "தேர்வு கவுண்ட்டவுன்", note: "📝 குறிப்புகள்", prog: "பாட முன்னேற்றம்" },
+    en: { welcome: "Welcome back, Warrior", grade: "📊 Grade Predictor", timer: "Focus Timer", music: "🌿 Study Ambience", cd: "Exam Countdown", note: "📝 Quick Study Notes", prog: "Unit Master Tracker" }
 };
 
-// --- 2. Theme & Header Logic ---
+// --- 3. Header & UI Logic ---
+window.onscroll = () => {
+    const h = document.getElementById("mainHeader");
+    window.scrollY > 50 ? h.classList.add("scrolled") : h.classList.remove("scrolled");
+};
+function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 function toggleTheme() {
     document.body.classList.toggle("dark-theme");
     localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark" : "light");
 }
 
-window.onscroll = () => {
-    const header = document.getElementById("mainHeader");
-    window.scrollY > 50 ? header.classList.add("scrolled") : header.classList.remove("scrolled");
-};
+// --- 4. Main Features ---
+function newQuote() { document.getElementById("quote").innerText = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`; }
 
-// --- 3. Grade Predictor ---
 function predictGrade() {
     const marks = document.getElementById("marksInput").value;
-    let grade = marks >= 75 ? "A" : marks >= 65 ? "B" : marks >= 55 ? "C" : marks >= 35 ? "S" : "W";
-    document.getElementById("gradeResult").innerText = marks ? `Result: ${grade}` : "-";
+    let g = marks >= 75 ? "A" : marks >= 65 ? "B" : marks >= 55 ? "C" : marks >= 35 ? "S" : "W";
+    document.getElementById("gradeResult").innerText = marks ? `Result: ${g}` : "-";
 }
 
-// --- 4. Focus Timer ---
 function startTimer() {
-    if (timerObj) return;
+    if(timerObj) return;
     timerObj = setInterval(() => {
-        if (timeLeft <= 0) { clearInterval(timerObj); alert("Time for a break!"); resetTimer(); return; }
+        if(timeLeft <= 0) { clearInterval(timerObj); alert("Focus Session Done!"); resetTimer(); return; }
         timeLeft--; updateTimerUI();
     }, 1000);
 }
 function resetTimer() { clearInterval(timerObj); timerObj = null; timeLeft = 1500; updateTimerUI(); }
 function updateTimerUI() {
-    const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+    const m = Math.floor(timeLeft/60), s = timeLeft%60;
     document.getElementById("timer").innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-// --- 5. Ambience Music ---
-const audio = document.getElementById("bgAudio");
-function playSound(type) { audio.src = sounds[type]; audio.play(); }
-function stopSound() { audio.pause(); }
+function playSound(t) {
+    const audio = document.getElementById("bgAudio");
+    const src = {rain: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", forest: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", lofi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"};
+    audio.src = src[t]; audio.play();
+}
+function stopSound() { document.getElementById("bgAudio").pause(); }
 
-// --- 6. Dynamic Flashcards ---
+function addWater() { waterCount++; localStorage.setItem('water', waterCount); document.getElementById("waterCount").innerText = waterCount; }
+
+// --- 5. Flashcards & Stream Logic ---
 function nextCard() {
     const stream = localStorage.getItem("stream") || "bio";
-    const streamFacts = facts[stream];
-    currentFactIdx = Math.floor(Math.random() * streamFacts.length);
-    document.getElementById("cardContent").innerText = streamFacts[currentFactIdx].q;
+    currentFactIdx = Math.floor(Math.random() * facts[stream].length);
+    document.getElementById("cardContent").innerText = facts[stream][currentFactIdx].q;
     isFlipped = false;
 }
 function flipCard() {
@@ -76,101 +81,86 @@ function flipCard() {
     isFlipped = !isFlipped;
 }
 
-// --- 7. Settings & Language ---
-const modal = document.getElementById("settingsModal");
-document.getElementById("settingsBtn").onclick = () => {
-    const p = JSON.parse(localStorage.getItem("profile")) || {};
-    document.getElementById("nameInp").value = p.name || "";
-    document.getElementById("streamInp").value = p.stream || "bio";
-    document.getElementById("langInp").value = p.lang || "en";
-    modal.style.display = "flex";
-};
-document.getElementById("closeSettings").onclick = () => modal.style.display = "none";
-
+// --- 6. Settings & Localization ---
 function applySettings() {
-    const name = document.getElementById("nameInp").value;
-    const stream = document.getElementById("streamInp").value;
-    const lang = document.getElementById("langInp").value;
-
-    localStorage.setItem("profile", JSON.stringify({name, stream, lang}));
-    localStorage.setItem("stream", stream);
+    const profile = { name: document.getElementById("nameInp").value, stream: document.getElementById("streamInp").value, lang: document.getElementById("langInp").value };
+    localStorage.setItem("profile", JSON.stringify(profile));
+    localStorage.setItem("stream", profile.stream);
     
-    document.getElementById("welcomeText").innerText = `Welcome, ${name || 'Warrior'}`;
-    document.getElementById("streamLabel").innerText = stream === 'bio' ? "Biology Stream" : "Maths Stream";
-    document.getElementById("activeStream").innerText = stream.toUpperCase();
+    document.getElementById("welcomeText").innerText = profile.name ? `Welcome, ${profile.name}` : translations[profile.lang].welcome;
+    document.getElementById("streamLabel").innerText = profile.stream === 'bio' ? "Biology Stream" : "Maths Stream";
+    document.getElementById("activeStream").innerText = profile.stream.toUpperCase();
     
-    // Language Toggle Logic
-    const isTa = lang === "ta";
-    document.getElementById("gradeHeading").innerText = isTa ? "📊 தரம் கணித்தல்" : "📊 Grade Predictor";
-    document.getElementById("timerHeading").innerText = isTa ? "கவன நேரம்" : "Focus Timer";
-    document.getElementById("noteHeading").innerText = isTa ? "📝 குறிப்புகள்" : "📝 Quick Study Notes";
-    document.getElementById("cdHeading").innerText = isTa ? "தேர்வு கவுண்ட்டவுன்" : "Exam Countdown";
-    document.getElementById("progHeading").innerText = isTa ? "பாட முன்னேற்றம்" : "Unit Master Tracker";
+    const t = translations[profile.lang];
+    document.getElementById("gradeHeading").innerText = t.grade;
+    document.getElementById("timerHeading").innerText = t.timer;
+    document.getElementById("musicHeading").innerText = t.music;
+    document.getElementById("cdHeading").innerText = t.cd;
+    document.getElementById("noteHeading").innerText = t.note;
+    document.getElementById("progHeading").innerText = t.prog;
 
+    document.getElementById("settingsModal").style.display = "none";
     nextCard();
-    modal.style.display = "none";
 }
 
-// --- 8. Syllabus Tracker ---
+// --- 7. Syllabus & Persistence ---
 function addUnit() {
-    const val = document.getElementById("unitInput").value;
-    if(!val) return;
-    units.push({name: val, done: false});
+    const v = document.getElementById("unitInput").value;
+    if(!v) return;
+    units.push({name: v, done: false});
     document.getElementById("unitInput").value = "";
-    saveAndRenderUnits();
+    renderUnits();
 }
-function toggleUnit(i) { units[i].done = !units[i].done; saveAndRenderUnits(); }
-function saveAndRenderUnits() {
+function renderUnits() {
     localStorage.setItem('units', JSON.stringify(units));
-    const list = document.getElementById("unitList");
-    list.innerHTML = "";
+    const list = document.getElementById("unitList"); list.innerHTML = "";
     let doneCount = 0;
     units.forEach((u, i) => {
         if(u.done) doneCount++;
-        list.innerHTML += `<div class="unit-item"><input type="checkbox" onchange="toggleUnit(${i})" ${u.done?'checked':''}> ${u.name}</div>`;
+        list.innerHTML += `<div class="input-row"><input type="checkbox" onchange="units[${i}].done=!units[${i}].done;renderUnits()" ${u.done?'checked':''}> ${u.name}</div>`;
     });
-    const percent = units.length ? Math.round((doneCount/units.length)*100) : 0;
-    document.getElementById("progressPercent").innerText = percent + "%";
-    document.getElementById("masterProgress").style.width = percent + "%";
+    const p = units.length ? Math.round((doneCount/units.length)*100) : 0;
+    document.getElementById("progressPercent").innerText = p + "%";
+    document.getElementById("masterProgress").style.width = p + "%";
 }
 
-// --- 9. Initial Load & Bubbles ---
-function saveNote() { localStorage.setItem("studyNote", document.getElementById("notePad").value); }
+function saveNote() { localStorage.setItem("note", document.getElementById("notePad").value); }
+function setExamDate() { localStorage.setItem("examDate", document.getElementById("examDateInput").value); runCD(); }
+function runCD() {
+    const target = localStorage.getItem("examDate"); if(!target) return;
+    setInterval(() => {
+        const d = new Date(target) - new Date();
+        if(d < 0) { document.getElementById("countdown").innerText = "Good Luck!"; return; }
+        const days = Math.floor(d/86400000), hrs = Math.floor((d%86400000)/3600000);
+        document.getElementById("countdown").innerText = `${days}d ${hrs}h Left 🔥`;
+    }, 1000);
+}
 
+// --- 8. Initialization ---
 window.onload = () => {
     if(localStorage.getItem("theme") === "dark") toggleTheme();
-    document.getElementById("notePad").value = localStorage.getItem("studyNote") || "";
+    document.getElementById("notePad").value = localStorage.getItem("note") || "";
+    document.getElementById("waterCount").innerText = waterCount;
     const p = JSON.parse(localStorage.getItem("profile"));
-    if(p) applySettings(); else nextCard();
-    saveAndRenderUnits();
-    
+    if(p) {
+        document.getElementById("nameInp").value = p.name;
+        document.getElementById("streamInp").value = p.stream;
+        document.getElementById("langInp").value = p.lang;
+        applySettings();
+    }
+    renderUnits(); runCD(); nextCard();
+    // Bubbles
     setInterval(() => {
-        const b = document.createElement("div");
-        b.className = "bubble";
+        const b = document.createElement("div"); b.className = "bubble";
         b.style.left = Math.random() * 100 + "vw";
         const s = Math.random() * 30 + 20 + "px";
         b.style.width = s; b.style.height = s;
         b.style.animationDuration = Math.random() * 4 + 4 + "s";
-        document.getElementById("bubbles").appendChild(b);
+        document.getElementById("bubbles-container").appendChild(b);
         setTimeout(() => b.remove(), 8000);
     }, 2000);
 };
 
-function resetAllData() { if(confirm("Clear all your progress?")) { localStorage.clear(); location.reload(); } }
-
-// Exam Countdown Logic
-function setExamDate() {
-    const date = document.getElementById("examDateInput").value;
-    if(date) { localStorage.setItem("examDate", date); runCD(); }
-}
-function runCD() {
-    const target = localStorage.getItem("examDate");
-    if(!target) return;
-    setInterval(() => {
-        const diff = new Date(target) - new Date();
-        if(diff < 0) return;
-        const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-        document.getElementById("countdown").innerText = `${d}d ${h}h ${m}m ${s}s left 🔥`;
-    }, 1000);
-}
-runCD();
+document.getElementById("settingsBtn").onclick = () => document.getElementById("settingsModal").style.display = "flex";
+document.getElementById("closeSettings").onclick = () => document.getElementById("settingsModal").style.display = "none";
+function resetAllData() { if(confirm("Are you sure? This will delete all your progress!")) { localStorage.clear(); location.reload(); } }
