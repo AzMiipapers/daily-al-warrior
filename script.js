@@ -1,118 +1,146 @@
-// --- 1. Infinite Quotes ---
+// --- 1. Global Data & Flashcards ---
+const flashcards = [
+    { q: "Bio: Powerhouse of the cell?", a: "Mitochondria" },
+    { q: "Maths: Derivative of tan(x)?", a: "sec²(x)" },
+    { q: "Bio: Who discovered DNA structure?", a: "Watson and Crick" },
+    { q: "Maths: Integral of 1/x?", a: "ln|x| + C" },
+    { q: "Bio: Main function of Ribosomes?", a: "Protein Synthesis" }
+];
+
+let currentCardIndex = -1;
+let isFlipped = false;
+
+// --- 2. Header & Logo Logic ---
+window.onscroll = () => {
+    const header = document.getElementById("mainHeader");
+    window.scrollY > 50 ? header.classList.add("scrolled") : header.classList.remove("scrolled");
+};
+
+// --- 3. Settings & Modal ---
+const modal = document.getElementById("settingsModal");
+document.getElementById("settingsBtn").onclick = () => modal.style.display = "flex";
+
+function saveSettings() {
+    const user = document.getElementById("userNameInput").value;
+    const lang = document.getElementById("langSelect").value;
+    localStorage.setItem("studySettings", JSON.stringify({user, lang}));
+    applySettings();
+    modal.style.display = "none";
+}
+
+function applySettings() {
+    const data = JSON.parse(localStorage.getItem("studySettings"));
+    if(data) {
+        if(data.user) document.getElementById("siteTitle").innerText = `${data.user}'s Hub`;
+        document.getElementById("langSelect").value = data.lang;
+    }
+}
+
+function resetAllData() {
+    if(confirm("Delete everything?")) { localStorage.clear(); location.reload(); }
+}
+
+// --- 4. Infinite Quotes ---
 const quotes = [
-    "Success is rising every time you fall!",
-    "It always seems impossible until it's done.",
-    "The secret of getting ahead is getting started.",
-    "Study like there's no tomorrow.",
-    "Hard work beats talent when talent doesn't work hard.",
-    "Don't wish for it, work for it.",
-    "Your future is created by what you do today."
+    "Success is not final, failure is not fatal.",
+    "Don't stop when you're tired, stop when you're done.",
+    "A/L is a journey, enjoy the learning.",
+    "Your future self will thank you for today's work."
 ];
 
 function newQuote() {
-    const q = quotes[Math.floor(Math.random() * quotes.length)];
-    document.getElementById("quote").innerText = `"${q}"`;
+    document.getElementById("quote").innerText = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`;
 }
 
-// --- 2. Header Scroll Effect ---
-window.onscroll = function() {
-    const header = document.querySelector("header");
-    if (window.scrollY > 50) { header.classList.add("scrolled"); }
-    else { header.classList.remove("scrolled"); }
-};
-
-// --- 3. Settings Modal ---
-const modal = document.getElementById("settingsModal");
-document.getElementById("settingsBtn").onclick = () => modal.style.display = "flex";
-document.getElementById("closeSettings").onclick = () => modal.style.display = "none";
-
-// --- 4. Exam Countdown ---
+// --- 5. Countdown ---
 function setExamDate() {
     const date = document.getElementById("examDateInput").value;
-    if (date) { localStorage.setItem("examDate", date); updateCountdown(); }
+    if(date) { localStorage.setItem("examDate", date); startCountdown(); }
 }
 
-function updateCountdown() {
+function startCountdown() {
     const target = localStorage.getItem("examDate");
-    if (!target) return;
-    
+    if(!target) return;
     setInterval(() => {
         const diff = new Date(target) - new Date();
-        if (diff < 0) { document.getElementById("countdown").innerText = "Best Wishes!"; return; }
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
+        if(diff < 0) return;
+        const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
         document.getElementById("countdown").innerText = `${d}d ${h}h ${m}m ${s}s left 🔥`;
     }, 1000);
 }
 
-// --- 5. Syllabus Tracker ---
-let subjects = [];
-function addSubject() {
-    const name = document.getElementById("subjectInput").value;
-    if (!name) return;
-    subjects.push({ name, done: false });
-    document.getElementById("subjectInput").value = "";
-    renderSyllabus();
-}
-
-function renderSyllabus() {
-    const list = document.getElementById("subjectsList");
-    list.innerHTML = "";
-    let doneCount = 0;
-    subjects.forEach((s, i) => {
-        if (s.done) doneCount++;
-        list.innerHTML += `<div><input type="checkbox" ${s.done ? 'checked' : ''} onchange="toggleSub(${i})"> ${s.name}</div>`;
-    });
-    const percent = subjects.length ? Math.round((doneCount / subjects.length) * 100) : 0;
-    document.getElementById("overallPercent").innerText = percent + "%";
-    document.getElementById("progressFill").style.width = percent + "%";
-}
-function toggleSub(i) { subjects[i].done = !subjects[i].done; renderSyllabus(); }
-
 // --- 6. Pomodoro Timer ---
-let timeLeft = 1500;
-let timerId = null;
+let timeLeft = 1500, timerId = null;
 function startTimer() {
-    if (timerId) return;
+    if(timerId) return;
     timerId = setInterval(() => {
         timeLeft--;
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        document.getElementById("timer").innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        if (timeLeft <= 0) clearInterval(timerId);
+        const mins = Math.floor(timeLeft/60), secs = timeLeft%60;
+        document.getElementById("timer").innerText = `${mins}:${secs<10?'0':''}${secs}`;
+        if(timeLeft <= 0) { clearInterval(timerId); alert("Time's up!"); }
     }, 1000);
 }
 function resetTimer() { clearInterval(timerId); timerId = null; timeLeft = 1500; document.getElementById("timer").innerText = "25:00"; }
 
-// --- 7. Task List ---
-function addTask() {
-    const val = document.getElementById("taskInput").value;
-    if (!val) return;
-    const li = document.createElement("li");
-    li.innerHTML = `✅ ${val} <button onclick="this.parentElement.remove()" style="padding:2px 5px; background:red; margin-left:10px;">X</button>`;
-    document.getElementById("taskList").appendChild(li);
-    document.getElementById("taskInput").value = "";
+// --- 7. Syllabus Tracker ---
+let total = 0, done = 0;
+function addSubject() {
+    const name = document.getElementById("subjectInput").value;
+    if(!name) return;
+    total++;
+    const div = document.createElement("div");
+    div.innerHTML = `<input type="checkbox" onchange="this.checked?done++:done--;updateProgress()"> ${name}`;
+    document.getElementById("subjectsList").appendChild(div);
+    document.getElementById("subjectInput").value = "";
+    updateProgress();
+}
+function updateProgress() {
+    const p = total === 0 ? 0 : Math.round((done/total)*100);
+    document.getElementById("overallPercent").innerText = p + "%";
+    document.getElementById("progressFill").style.width = p + "%";
 }
 
-// --- 8. Reflection ---
+// --- 8. Flashcard Logic ---
+function nextCard() {
+    currentCardIndex = Math.floor(Math.random() * flashcards.length);
+    document.getElementById("cardContent").innerText = flashcards[currentCardIndex].q;
+    isFlipped = false;
+}
+function flipCard() {
+    if(currentCardIndex === -1) return;
+    document.getElementById("cardContent").innerText = isFlipped ? flashcards[currentCardIndex].q : flashcards[currentCardIndex].a;
+    isFlipped = !isFlipped;
+}
+
+// --- 9. Water & Music ---
+let water = 0;
+function addWater() { water++; document.getElementById("waterCount").innerText = water; }
+
+function playMusic(type) {
+    const audio = document.getElementById("studyAudio");
+    audio.src = type === 'lofi' ? "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3";
+    audio.play();
+}
+function stopMusic() { document.getElementById("studyAudio").pause(); }
+
+// --- 10. Reflection ---
 function saveReflection() {
     const val = document.getElementById("reflectionInput").value;
     document.getElementById("todayReflection").innerText = "Saved: " + val;
 }
 
-// --- 9. Bubbles ---
+// --- 11. Bubbles ---
 function createBubble() {
     const b = document.createElement("div");
     b.className = "bubble";
     b.style.left = Math.random() * 100 + "vw";
-    const s = Math.random() * 40 + 20 + "px";
+    const s = Math.random() * 30 + 20 + "px";
     b.style.width = s; b.style.height = s;
-    b.style.animationDuration = Math.random() * 5 + 5 + "s";
-    document.body.appendChild(b);
-    setTimeout(() => b.remove(), 10000);
+    b.style.animationDuration = Math.random() * 4 + 4 + "s";
+    document.getElementById("bubbles").appendChild(b);
+    setTimeout(() => b.remove(), 8000);
 }
 setInterval(createBubble, 1500);
 
-window.onload = updateCountdown;
+// Run on Load
+window.onload = () => { applySettings(); startCountdown(); nextCard(); };
