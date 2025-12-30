@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ta">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
         <div class="header-container">
             <div class="logo">
                 <span class="material-icons">auto_stories</span>
-                <h2>Daily A/L Warrior</h2>
+                <h2 id="siteTitle">Daily A/L Warrior</h2>
             </div>
             <nav>
                 <button id="themeToggle" title="Light/Dark Mode">🌙</button>
@@ -29,8 +29,8 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <h1>உன் A/L வெற்றிக்கான தினசரி துணை</h1>
-        <p>Study Planner, Pomodoro Timer, Syllabus Tracker & Daily Motivation – எல்லாம் ஒரே இடத்தில்!</p>
+        <h1 id="heroTitle">Your Daily Companion for A/L Success</h1>
+        <p id="heroDesc">Study Planner, Pomodoro Timer, Syllabus Tracker & Daily Motivation – All in One Place!</p>
         <button class="start-btn" onclick="document.getElementById('dashboard').scrollIntoView({behavior: 'smooth'})">Start Now 🚀</button>
     </section>
 
@@ -39,26 +39,33 @@
 
         <!-- Daily Motivation Quote -->
         <div class="quote-box">
-            <h2>இன்றைய உத்வேகம்</h2>
-            <p id="quote">"வெற்றி என்பது தோல்வியில் இருந்து எழுந்து நிற்பதுதான்!"</p>
-            <button onclick="newQuote()">புதிய Quote</button>
+            <h2 id="motivationHeading">Today's Motivation</h2>
+            <p id="quote">"Success is rising every time you fall!"</p>
+            <button onclick="newQuote()">New Quote</button>
         </div>
 
-        <!-- Study Streak & Exam Countdown -->
-        <div class="streak-box">
-            <h2>🔥 Study Streak</h2>
-            <p id="streakCount">0 days</p>
-            <p>இன்னைக்கு study பண்ணினா streak +1 ஆகும்!</p>
-            <button onclick="checkInToday()">இன்னைக்கு Study Done ✅</button>
-        </div>
-
+        <!-- Enhanced Exam Countdown -->
         <div class="countdown-box">
-            <h2>⏰ A/L Exam Countdown</h2>
+            <h2 id="countdownHeading">⏰ A/L Exam Countdown</h2>
             <input type="date" id="examDateInput">
             <button onclick="setExamDate()">Set Exam Date</button>
-            <p id="countdown">Exam date set பண்ணுங்க!</p>
+            <p id="countdown" class="big-countdown">Set your exam date!</p>
         </div>
 
+        <!-- Daily Past Paper MCQ Quiz -->
+        <div class="quiz-box">
+            <h2 id="quizHeading">Daily Past Paper MCQ Quiz</h2>
+            <p>Test yourself with 5 random A/L questions!</p>
+            <button onclick="startQuiz()">Start Quiz</button>
+            <div id="quizArea" style="display:none;">
+                <p id="question"></p>
+                <div id="options"></div>
+                <button id="nextBtn" style="display:none;" onclick="nextQuestion()">Next</button>
+                <p id="result"></p>
+            </div>
+        </div>
+
+        <!-- Other sections (Pomodoro, Tasks, Progress, Reflection, More Quotes, About) remain same as previous -->
         <!-- Pomodoro Timer -->
         <div class="timer-box">
             <h2>Pomodoro Timer</h2>
@@ -69,8 +76,8 @@
 
         <!-- To-Do List -->
         <div class="todo-box">
-            <h2>இன்றைய Tasks</h2>
-            <input type="text" id="taskInput" placeholder="Task எழுது...">
+            <h2 id="tasksHeading">Today's Tasks</h2>
+            <input type="text" id="taskInput" placeholder="Add a task...">
             <button onclick="addTask()">Add</button>
             <ul id="taskList"></ul>
         </div>
@@ -78,7 +85,7 @@
         <!-- Syllabus Progress -->
         <div class="progress-box">
             <h2>Syllabus Progress</h2>
-            <input type="text" id="subjectInput" placeholder="Subject Add பண்ணு (e.g., Physics)">
+            <input type="text" id="subjectInput" placeholder="Add Subject (e.g., Physics)">
             <button onclick="addSubject()">Add Subject</button>
             <div id="subjectsList"></div>
             <div class="overall-progress">
@@ -91,31 +98,28 @@
 
         <!-- Daily Reflection -->
         <div class="reflection-box">
-            <h2>✨ இன்னைக்கு என்ன Learn பண்ணேன்?</h2>
-            <textarea id="reflectionInput" placeholder="இன்னைக்கு நான்..."></textarea>
+            <h2 id="reflectionHeading">✨ What Did I Learn Today?</h2>
+            <textarea id="reflectionInput" placeholder="Today I learned..."></textarea>
             <button onclick="saveReflection()">Save</button>
             <p id="todayReflection"></p>
         </div>
 
-        <!-- More Motivational Quotes -->
+        <!-- More Quotes & About -->
         <div class="quote-box">
-            <h2>மேலும் உத்வேகமூட்டும் வார்த்தைகள்</h2>
+            <h2>More Inspirational Quotes</h2>
             <div id="extraQuotes"></div>
-            <button onclick="loadMoreQuotes()">மேலும் Quotes ஏற்று</button>
+            <button onclick="loadMoreQuotes()">Load More</button>
         </div>
 
-        <!-- About Section -->
         <div class="about-box">
-            <h2>இந்த Website பற்றி</h2>
-            <p>Daily A/L Warrior என்பது Sri Lankan GCE A/L மாணவர்களுக்காக உருவாக்கப்பட்ட free tool. உங்கள் study routine-ஐ organize பண்ணவும், motivation பெறவும் உதவும்.</p>
-            <p>Made with ❤️ by a fellow A/L warrior!</p>
+            <h2>About This Tool</h2>
+            <p>Daily A/L Warrior is a free tool created for Sri Lankan GCE A/L students.</p>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
         <p>&copy; 2025 Daily A/L Warrior | All Rights Reserved</p>
-        <p>Contact: dailyalwarrior@gmail.com</p>
     </footer>
 
     <script src="script.js"></script>
