@@ -222,7 +222,7 @@ function factoryReset() { if(confirm("Delete all data?")) { localStorage.clear()
 // --- script.js ---
 
 // உங்கள் API Key
-const GEMINI_API_KEY = "AIzaSyAmZWQyjfsgQIaItNlOPNAz6N42GaZxuZo"; 
+const GEMINI_API_KEY = "AIzaSyCbSVDxcodFhiKcbZaOscwJ8ac9GfD65lA"; 
 
 function toggleChat() {
     const chatBox = document.getElementById("chat-box");
