@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily A/L Warrior Pro | Ultimate Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A/L Warrior Pro | Ultimate Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="light-theme">
@@ -21,7 +21,6 @@
                     <p id="siteSubtitle">Created by ZiM</p>
                 </div>
             </div>
-
             <nav class="nav-links">
                 <button onclick="toggleTheme()" class="icon-btn">🌓</button>
                 <button id="settingsBtn" class="icon-btn">⚙️</button>
@@ -31,104 +30,43 @@
     </header>
 
     <main class="container">
-        <section class="hero-card">
-            <div class="hero-text">
-                <h1 id="welcomeText">Welcome, Warrior</h1>
-                <p id="smartSuggestion">Start your journey by adding a topic below!</p>
+        <section class="card">
+            <h2 id="healthHeading">🌙 Healthy Lifestyle</h2>
+            <div class="input-row">
+                <input type="number" id="sleepHours" placeholder="Hours slept (e.g. 7)">
+                <button onclick="checkSleep()">Check Sleep</button>
             </div>
-            <div class="hero-badges">
-                <span id="streamLabel" class="badge">Biology Stream</span>
-                <span id="rankLabel" class="badge">Rank: Scholar</span>
+            <p id="sleepFeedback" class="status-msg"></p>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--accent);">
+
+            <div class="input-row">
+                <input type="time" id="alarmTime">
+                <button onclick="setAlarm()">Set Alarm</button>
             </div>
+            <p id="alarmStatus" class="status-msg"></p>
         </section>
 
         <section class="card graph-section">
             <h2 id="graphHeading">📊 Mastery Analysis</h2>
-            <div class="chart-wrapper">
-                <canvas id="masteryChart"></canvas>
-            </div>
-        </section>
-
-        <section class="card roadmap-box">
-            <h2 id="roadmapHeading">🗺️ Subject Roadmap (Topics & Deadlines)</h2>
-            <div class="roadmap-inputs">
-                <select id="subSelect">
-                    <option value="Physics">Physics</option>
-                    <option value="Chemistry">Chemistry</option>
-                    <option value="MainSub">Bio / Maths</option>
-                </select>
-                <input type="text" id="topicInput" placeholder="Topic Name (e.g. Mechanics)">
-                <select id="diffSelect">
-                    <option value="Easy">Easy 😊</option>
-                    <option value="Normal">Normal 😐</option>
-                    <option value="Hard">Hard 😫</option>
-                </select>
-                <input type="date" id="deadlineInput">
-                <button onclick="addTopic()">Track Topic</button>
-            </div>
-            <div id="topicList" class="topic-grid"></div>
-        </section>
-
-        <section class="card quote-box">
-            <h2 id="quoteHeading">Today's Motivation</h2>
-            <p id="quoteText">"The secret of getting ahead is getting started."</p>
-            <button onclick="generateQuote()" class="secondary-btn">New Inspiration</button>
+            <div class="chart-wrapper"><canvas id="masteryChart"></canvas></div>
         </section>
 
         <div class="main-grid">
-            <div class="col">
-                <div class="card">
-                    <h2 id="timerHeading">Focus Pomodoro</h2>
-                    <div id="timer" class="big-timer">25:00</div>
-                    <div class="timer-btns">
-                        <button onclick="startTimer()">Start</button>
-                        <button onclick="resetTimer()" class="secondary">Reset</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <h2 id="musicHeading">🌿 Study Ambience</h2>
-                    <div class="music-grid">
-                        <button onclick="playSound('rain')">Rain</button>
-                        <button onclick="playSound('forest')">Forest</button>
-                        <button onclick="playSound('lofi')">Lofi</button>
-                        <button class="stop-btn" onclick="stopSound()">Stop</button>
-                    </div>
+            <div class="card">
+                <h2 id="timerHeading">Focus Pomodoro</h2>
+                <div id="timer" class="big-timer">25:00</div>
+                <div class="timer-btns">
+                    <button onclick="startTimer()">Start</button>
+                    <button onclick="resetTimer()" class="secondary">Reset</button>
                 </div>
             </div>
-            <div class="col">
-                <div class="card">
-                    <h2 id="cdHeading">Exam Countdown</h2>
-                    <input type="date" id="examDateInput" onchange="setExamDate()">
-                    <div id="countdown" class="countdown-text">Set Exam Date</div>
-                </div>
-                <div class="card">
-                    <h2 id="waterHeading">💧 Water Tracker</h2>
-                    <p>Glasses: <span id="waterCount">0</span> / 8</p>
-                    <button onclick="addWater()" class="full-btn">Drink Glass</button>
-                </div>
+            <div class="card">
+                <h2 id="waterHeading">💧 Water Tracker</h2>
+                <p>Glasses: <span id="waterCount">0</span> / 8</p>
+                <button onclick="addWater()" class="full-btn">Drink Glass</button>
             </div>
         </div>
-
-        <section class="card flashcard-box">
-            <h2><span class="material-icons">psychology</span> Quick Revision (<span id="activeStreamDisplay">BIO</span>)</h2>
-            <div class="flashcard" onclick="flipCard()">
-                <div id="cardContent">Select stream in settings!</div>
-            </div>
-            <button onclick="nextCard()" class="full-btn">Next Fact</button>
-        </section>
-
-        <section class="card">
-            <h2 id="unitHeading">📚 Syllabus Unit Master</h2>
-            <div class="input-row">
-                <input type="text" id="unitInput" placeholder="New Unit...">
-                <button onclick="addUnit()">Add</button>
-            </div>
-            <div id="unitList"></div>
-            <div class="progress-container">
-                <div class="progress-bar"><div id="unitProgressFill" class="progress-fill"></div></div>
-                <span id="unitPercent">0% Done</span>
-            </div>
-        </section>
 
         <section class="card">
             <h2 id="noteHeading">📝 Study Notes & Formulas</h2>
@@ -136,35 +74,26 @@
         </section>
     </main>
 
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Warrior Settings</h3>
-                <span id="closeSettings" class="close">&times;</span>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>A/L Warrior Pro is designed for Bio and Maths students to manage study goals and health.</p>
             </div>
-            <div class="modal-body">
-                <div class="s-row"><label>Your Name</label><input type="text" id="nameInp"></div>
-                <div class="s-row">
-                    <label>A/L Stream</label>
-                    <select id="streamInp">
-                        <option value="bio">Biology</option>
-                        <option value="maths">Combined Maths</option>
-                    </select>
-                </div>
-                <div class="s-row">
-                    <label>Language</label>
-                    <select id="langInp">
-                        <option value="en">English</option>
-                        <option value="ta">Tamil (தமிழ்)</option>
-                    </select>
-                </div>
-                <button onclick="applySettings()" class="full-btn">Save Changes</button>
-                <button onclick="factoryReset()" class="reset-btn">Reset All Data</button>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Syllabus Guide</a></li>
+                    <li><a href="#">Past Papers</a></li>
+                    <li><a href="#">Study Sources</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <p>&copy; 2025 | Created by <strong>ZiM</strong></p>
             </div>
         </div>
-    </div>
+    </footer>
 
-    <audio id="bgAudio" loop></audio>
     <script src="script.js"></script>
 </body>
 </html>
