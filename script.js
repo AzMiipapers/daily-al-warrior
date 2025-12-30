@@ -219,7 +219,7 @@ document.getElementById("closeSettings").onclick = () => document.getElementById
 function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 function factoryReset() { if(confirm("Delete all data?")) { localStorage.clear(); location.reload(); } }
 
-const GEMINI_API_KEY = "AIzaSyBLC6enWWKAr3O9ys-4NDjnhch4r1PSw0E"; 
+const GEMINI_API_KEY = "AIzaSyBhF_A6-eJzqO1jioZJGgrr3ommV27KBB0"; 
 
 function toggleChat() {
     document.getElementById("chat-box").classList.toggle("chat-hidden");
