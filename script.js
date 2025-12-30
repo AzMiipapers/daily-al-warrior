@@ -221,51 +221,63 @@ function factoryReset() { if(confirm("Delete all data?")) { localStorage.clear()
 
 // --- script.js ---
 
-// 1. உங்கள் கீயை இங்கே மட்டும் மாற்றுங்கள்
+// உங்கள் புதிய API Key இங்கே சேர்க்கப்பட்டுள்ளது
 const GEMINI_API_KEY = "AIzaSyAmZWQyjfsgQIaItNlOPNAz6N42GaZxuZo"; 
 
+// Chat Box-ஐத் திறக்க மற்றும் மூட (Open/Close)
+function toggleChat() {
+    const chatBox = document.getElementById("chat-box");
+    if (chatBox) {
+        chatBox.classList.toggle("chat-hidden");
+    }
+}
+
+// AI-யிடம் கேள்வி கேட்கும் முதன்மையான ஃபங்க்ஷன்
 async function askAI() {
     const inputField = document.getElementById("userInput");
     const chatContent = document.getElementById("chat-content");
     const query = inputField.value.trim();
     
+    // உள்ளீடு காலியாக இருந்தால் எதையும் செய்ய வேண்டாம்
     if (!query) return;
 
-    // மாணவர் மெசேஜ்
+    // மாணவர் கேட்ட கேள்வியைத் திரையில் காட்டுதல்
     chatContent.innerHTML += `<div class="user-msg">${query}</div>`;
-    inputField.value = "";
-    chatContent.scrollTop = chatContent.scrollHeight;
+    inputField.value = ""; // Input பாக்ஸை காலி செய்தல்
+    chatContent.scrollTop = chatContent.scrollHeight; // தானாக கீழே ஸ்க்ரோல் செய்ய
 
-    // "Typing..." மெசேஜ் (AI பதில் சொல்லும் வரை)
+    // AI பதிலுக்காகக் காத்திருக்கும்போது லோடிங் காட்டுதல்
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "ai-msg";
     loadingDiv.innerText = "...";
     chatContent.appendChild(loadingDiv);
 
     try {
-        // API URL மற்றும் முறை (Method)
+        // Gemini API-க்கு கோரிக்கை (Request) அனுப்புதல்
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: query }] }]
+                contents: [{ parts: [{ text: "You are a helpful Sri Lankan A/L student assistant. Answer in Tamil or English based on the question: " + query }] }]
             })
         });
 
         const data = await response.json();
 
-        // பிழைகளைக் கண்டறிய (Debugging)
-        if (data.error) {
+        // பதில் சரியாக வந்ததா என்று சோதித்தல்
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+            const aiResponse = data.candidates[0].content.parts[0].text;
+            loadingDiv.innerText = aiResponse; // லோடிங் தூக்கிவிட்டுப் பதிலைப் போடுதல்
+        } else if (data.error) {
             loadingDiv.innerText = "Error: " + data.error.message;
-            console.error("Gemini Error:", data.error);
-        } else if (data.candidates && data.candidates[0].content.parts[0].text) {
-            loadingDiv.innerText = data.candidates[0].content.parts[0].text;
+            console.error("API Error:", data.error);
         } else {
-            loadingDiv.innerText = "மன்னிக்கவும், பதில் கிடைக்கவில்லை.";
+            loadingDiv.innerText = "மன்னிக்கவும், இப்போதைக்கு என்னால் பதில் சொல்ல முடியவில்லை.";
         }
     } catch (error) {
-        loadingDiv.innerText = "Connection Error! இணையத்தை சரிபார்க்கவும்.";
+        loadingDiv.innerText = "Connection Error! இணைய இணைப்பைச் சரிபார்க்கவும்.";
         console.error("Fetch Error:", error);
     }
+    
     chatContent.scrollTop = chatContent.scrollHeight;
 }
