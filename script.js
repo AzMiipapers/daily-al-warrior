@@ -219,11 +219,10 @@ document.getElementById("closeSettings").onclick = () => document.getElementById
 function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 function factoryReset() { if(confirm("Delete all data?")) { localStorage.clear(); location.reload(); } }
 
-const GEMINI_API_KEY = "AIzaSyAmZWQyjfsgQIaItNlOPNAz6N42GaZxuZo"; 
+// --- script.js ---
 
-function toggleChat() {
-    document.getElementById("chat-box").classList.toggle("chat-hidden");
-}
+// 1. உங்கள் கீயை இங்கே மட்டும் மாற்றுங்கள்
+const GEMINI_API_KEY = "AIzaSyAmZWQyjfsgQIaItNlOPNAz6N42GaZxuZo"; 
 
 async function askAI() {
     const inputField = document.getElementById("userInput");
@@ -237,22 +236,36 @@ async function askAI() {
     inputField.value = "";
     chatContent.scrollTop = chatContent.scrollHeight;
 
+    // "Typing..." மெசேஜ் (AI பதில் சொல்லும் வரை)
+    const loadingDiv = document.createElement("div");
+    loadingDiv.className = "ai-msg";
+    loadingDiv.innerText = "...";
+    chatContent.appendChild(loadingDiv);
+
     try {
+        // API URL மற்றும் முறை (Method)
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: "You are a helpful Sri Lankan A/L student assistant. Answer in the language the student asks (Tamil/English). Question: " + query }] }]
+                contents: [{ parts: [{ text: query }] }]
             })
         });
 
         const data = await response.json();
-        const aiResponse = data.candidates[0].content.parts[0].text;
 
-        // AI மெசேஜ்
-        chatContent.innerHTML += `<div class="ai-msg">${aiResponse}</div>`;
-        chatContent.scrollTop = chatContent.scrollHeight;
+        // பிழைகளைக் கண்டறிய (Debugging)
+        if (data.error) {
+            loadingDiv.innerText = "Error: " + data.error.message;
+            console.error("Gemini Error:", data.error);
+        } else if (data.candidates && data.candidates[0].content.parts[0].text) {
+            loadingDiv.innerText = data.candidates[0].content.parts[0].text;
+        } else {
+            loadingDiv.innerText = "மன்னிக்கவும், பதில் கிடைக்கவில்லை.";
+        }
     } catch (error) {
-        chatContent.innerHTML += `<div class="ai-msg">மன்னிக்கவும், என்னால் இப்போது பதில் சொல்ல முடியவில்லை. மீண்டும் முயற்சிக்கவும்.</div>`;
+        loadingDiv.innerText = "Connection Error! இணையத்தை சரிபார்க்கவும்.";
+        console.error("Fetch Error:", error);
     }
+    chatContent.scrollTop = chatContent.scrollHeight;
 }
